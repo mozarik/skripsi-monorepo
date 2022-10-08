@@ -5,7 +5,7 @@
 %
 
 % Mengatur bahasa latex
-\usepackage[indonesian]{babel}
+% \usepackage[indonesian]{babel}
 \usepackage[utf8]{inputenc}
 
 %
@@ -61,9 +61,14 @@
 
 % Merubah huruf kapital pada judul daftar isi, daftar gambar, dan daftar table
 \usepackage{tocloft}
-\renewcommand{\cfttoctitlefont}{\hfil\large\bfseries\MakeUppercase}
-\renewcommand{\cftloftitlefont}{\hfil\large\bfseries\MakeUppercase}
-\renewcommand{\cftlottitlefont}{\hfil\large\bfseries\MakeUppercase}
+\renewcommand{\cfttoctitlefont}{\large\bfseries\MakeUppercase}
+\renewcommand{\cftloftitlefont}{\large\bfseries\MakeUppercase}
+\renewcommand{\cftlottitlefont}{\large\bfseries\MakeUppercase}
+\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}} % for parts
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}} % for chapters
+\renewcommand\contentsname{DAFTAR ISI}
+\renewcommand\listfigurename{DAFTAR GAMBAR}
+\renewcommand\listtablename{DAFTAR TABEL}
 
 % Mengatur font section
 \usepackage{sectsty}
