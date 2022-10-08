@@ -8,9 +8,9 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: ../../skripsi
+# defaults:
+#   run:
+#     working-directory: ../../skripsi
 
 jobs:
   build_latex:
