@@ -36,6 +36,7 @@ jobs:
         with:
           commit: ${{ github.event.pull_request.head.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts-branch: pdf-dump
           artifacts: |
             ${{ github.workspace }}/skripsi/skripsi.pdf
             ${{ github.workspace }}/skripsi/proposal.pdf
