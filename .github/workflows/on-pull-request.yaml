@@ -20,12 +20,14 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: skripsi
-          root_file: main.tex
+          root_file: |
+            skripsi.tex
+            proposal.tex
 
       - name: Check if PDF exists
         run: |
           ls ${{ github.workspace }}/skripsi
-          FILE=${{ github.workspace }}/skripsi/main.pdf
+          FILE=${{ github.workspace }}/skripsi/skripsi.pdf
           test -f "$file" || echo "$file"
 
       - name: Create Artifact On Pull Request
@@ -35,27 +37,5 @@ jobs:
           commit: ${{ github.event.pull_request.head.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: |
-            ${{ github.workspace }}/skripsi/main.pdf
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Release Asset
-      #   id: upload-release-asset
-      #   uses:
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     working_directory: skripsi
-      #     asset_path: ./main.pdf
-      #     asset_name: main.pdf
-      #     asset_content_type: pdf
+            ${{ github.workspace }}/skripsi/skripsi.pdf
+            ${{ github.workspace }}/skripsi/proposal.pdf

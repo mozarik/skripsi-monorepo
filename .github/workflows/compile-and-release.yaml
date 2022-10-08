@@ -5,10 +5,6 @@ on:
     tags:
       - "*.*.*"
 
-# defaults:
-#   run:
-#     working-directory: ../../skripsi
-
 jobs:
   build_latex:
     runs-on: ubuntu-latest
@@ -18,11 +14,15 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
           working_directory: skripsi
-          root_file: main.tex
+          root_file: |
+            main.tex
+            proposal.tex
+
       - name: Check if PDF exists
         run: |
           ls ${{ github.workspace }}/skripsi
@@ -34,31 +34,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: |
-            skripsi/main.pdf
-            skripsi/main.tex
+            skripsi/skripsi.pdf
+            skripsi/proposal.pdf
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
-
-      # - name: Upload Release Asset
-      #   id: upload-release-asset
-      #   uses:
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     working_directory: skripsi
-      #     asset_path: ./main.pdf
-      #     asset_name: main.pdf
-      #     asset_content_type: pdf
