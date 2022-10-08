@@ -20,8 +20,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
-        run: ls -la
-        working-directory: ${{ github.workspace }}../skripsi
         with:
           root_file: ${{ github.workspace }}../skripsi
 
