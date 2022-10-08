@@ -1,0 +1,41 @@
+name: Compile Latex and Release PDF
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          working_directory: skripsi
+          root_file: |
+            skripsi.tex
+            proposal.tex
+
+      - name: Check if PDF exists
+        run: |
+          ls ${{ github.workspace }}/skripsi
+          FILE=${{ github.workspace }}/skripsi/skripsi.pdf
+          test -f "$file" || echo "$file"
+
+      - name: Create Artifact On Pull Request
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: gavv/pull-request-artifacts@v1.0.0
+        with:
+          commit: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: |
+            ${{ github.workspace }}/skripsi/skripsi.pdf
+            ${{ github.workspace }}/skripsi/proposal.pdf
