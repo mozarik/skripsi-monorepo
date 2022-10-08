@@ -36,7 +36,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: skripsi/main.pdf
+          files: |
+            skripsi/main.pdf
+            skripsi/main.tex
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
