@@ -61,15 +61,15 @@
 
 % Merubah huruf kapital pada judul daftar isi, daftar gambar, dan daftar table
 \usepackage{tocloft}
-\renewcommand{\cfttoctitlefont}{\large\bfseries\MakeUppercase}
-\renewcommand{\cftloftitlefont}{\large\bfseries\MakeUppercase}
-\renewcommand{\cftlottitlefont}{\large\bfseries\MakeUppercase}
+% \renewcommand{\cfttoctitlefont}{\large\bfseries\MakeUppercase}
+% \renewcommand{\cftloftitlefont}{\large\bfseries\MakeUppercase}
+% \renewcommand{\cftlottitlefont}{\hfil\large\bfseries\MakeUppercase}
 \renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}} % for parts
 \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}} % for chapters
-\renewcommand\contentsname{DAFTAR ISI}
-\renewcommand\listfigurename{DAFTAR GAMBAR}
-\renewcommand\listtablename{DAFTAR TABEL}
-
+\renewcommand{\contentsname}{\hspace*{\fill}\bfseries\Large DAFTAR ISI\hspace*{\fill}}   
+\renewcommand\listfigurename{\hspace*{\fill}\bfseries\Large DAFTAR GAMBAR\hspace*{\fill}}
+\renewcommand\listtablename{\hspace*{\fill}\bfseries\Large DAFTAR TABEL\hspace*{\fill}}
+ 
 % Mengatur font section
 \usepackage{sectsty}
 \sectionfont{\fontsize{12}{14}\selectfont}

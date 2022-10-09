@@ -13,7 +13,10 @@
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcounter{originalpagenumber}%
+% Variabel baru untuk menyimpan nomor halaman
+\newcounter{originalpagenumber}
+
+% Awal bagian penulisan laporan
 \begin{document}
 
 \include{src/hype_indonesia}
@@ -60,7 +63,25 @@
 \addcontentsline{toc}{chapter}{DAFTAR GAMBAR}
 \clearpage
 
+% Gunakan penomeran Arab (1, 2, 3, ...) setelah bagian ini.
+\pagenumbering{arabic}
 
+
+%
+% Atur header dan footer dalam dokumen.
+% 
+\renewcommand{\headrulewidth}{0.0pt}
+\fancyhf{}
+\fancyhead[L]{}
+\fancyhead[C]{}
+% \fancyhead[R]{\thepage}
+\fancyfoot[CO]{\thepage}
+\renewcommand{\headrulewidth}{0.0pt}
+\renewcommand{\footrulewidth}{0.0pt}
+\pagestyle{fancy}
+
+\onehalfspacing
+\include{skripsi/09_bab1_pendahuluan}
 
 
 % Merubah Nama Bibliografi ke Daftar Pustaka
@@ -74,5 +95,18 @@
 % Daftar Pustaka
 \bibliographystyle{IEEEtranN}
 \bibliography{references}
+
+%
+% Lampiran 
+%
+
+\setcounter{originalpagenumber}{\number\value{page}}%
+\setcounter{page}{0}
+\pagenumbering{arabic}
+
+\onehalfspacing
+\pagenumbering{arabic}% 
+\setcounter{page}{\number\value{originalpagenumber}}
+\clearpage
 
 \end{document}

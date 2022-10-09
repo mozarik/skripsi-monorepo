@@ -20,7 +20,7 @@ jobs:
         with:
           working_directory: skripsi
           root_file: |
-            main.tex
+            skripsi.tex
             proposal.tex
 
       - name: Check if PDF exists
