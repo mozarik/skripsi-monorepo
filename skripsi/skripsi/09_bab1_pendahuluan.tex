@@ -17,7 +17,7 @@ instalasi perangkat lunak kedalam environment exectuion, dan aktivasi sebuah sof
 Untuk mendeploy sebuah sistem perangkat lunak juga ada beberapa yang harus diperhatikan antara lain sub-komponen yang dibutuhkan atau package external,
 resource (hardware). Untuk melakukan deploymen sub-komponen ini dibutuhkannya sebuah konfigurasi yang mendeskripsikan versi sub-komponen yang digunakan oleh perangkat lunak.
 Dengan bahasa modern sekarang konfigurasi sub-komponen yang digunakan oleh main aplikasi biasanya sudah automatis terbuat contohnya antara lain adalah;
-go modules  \cite{go_mod} dalam bahasa Golang, requirement file  \cite{requirementPython} dalam bahasa Python, atau file RubySpec  \cite{rubySpec} pada bahasa Ruby.
+go modules  \cite{gomod} dalam bahasa Golang, requirement file  \cite{requirementPython} dalam bahasa Python, atau file RubySpec  \cite{rubySpec} pada bahasa Ruby.
 \par
 Terdapat beberapa karakteristik yang mendasar pada deployment sebuah perangkat lunak yang ditulis oleh Alan Dearle yaitu  \cite{Dearle2007};
 \textbf{\textit{Release}} berupa jembatan antara proses deployment dengan proses development. yang meliputi semua operasi
@@ -65,7 +65,7 @@ dengan melakukan penyesuaian jumlah \textit{container} yang  dijalankan \cite{Si
 \par
 \textit{Containerization} \cite{davidbritch} ini sangat berdampak pada aspek infrastruktur dan \textit{runtime} sebuah aplikasi.
 Tapi dengan adanya \textit{container} diperlukan juga sebuah  sistem yang melakukan orkestrasi secara otomatis pada \textit{container} tersebut.
-Dengan  adanya kubernetes kita dapat memanfaatkan fitur fitur yang diberikan oleh kubernetes antara lain fitur automatic scaling \cite{Leila2018, kubernetes_2021}.
+Dengan  adanya kubernetes kita dapat memanfaatkan fitur fitur yang diberikan oleh kubernetes antara lain fitur automatic scaling \cite{Leila2018,kubernetes2021What}.
 Saat ini untuk melakukan  deployment sebuah \textit{container} (\textit{service)}) dilakukan secara manual dengan merubah file deployment.
 Dengan demikian, diperlukan cara otomatis untuk melakukan deployment \textit{service} yang baru/diubah.
 \par

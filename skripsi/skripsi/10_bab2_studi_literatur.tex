@@ -1,0 +1,212 @@
+%-----------------------------------------------------------------------------%
+\chapter{TINJAUAN PUSTAKA}
+%-----------------------------------------------------------------------------%
+
+\vspace{4.5pt}
+\setlength{\parskip}{0.5em}
+
+\section{Arsitektur \textit{Microservice}} \label{sec:Arsitektur Microservice}
+Arsitektur \textit{Microservice} merupakan sebuah pendekatan atau pola desain dalam membangun sebuah perangkat lunak
+yang terbagi-bagi menjadi beberapa komponen perangkat lunak. \textit{Microservice} sendiri merupakan
+servis kecil yang bekerja secara independen yang saling berinteraksi dengan service lainnya via \textit{messages protocol} \cite{Newman2015}
+
+\textbf{insert gambar arsitektur microservice}
+
+Sebelum adanya microservice, perangkat lunak dibangun dengan cara \textit{Monolithic}. Secara ringkas, \textit{Monolithic Software} adalah suatu
+sistem yang dikembangkan dengan satu kesatuan yang besar dan tidak dapat dieksekusi secara independen \cite{Nicola2017}.
+\textit{Monolithic Software} memiliki beragam komponen terikat yang saling berinteraksi dan memiliki
+tanggung jawab terhadap alur kerja dari perangkat lunak tersebut.
+
+Terdapat beberapa kekurangan dari pendekatan tersebut dari sisi pengembangan perangkat lunak dan \textit{maintainability}.
+Menurut Nicola dkk \cite{Nicola2017}, beberapa kekurangan dari pendekatan \textit{Monolithic Software} adalah:
+\begin{itemize}
+    \item \textit{Monolithic Software} memiliki kompleksitas yang tinggi, sehingga membutuhkan waktu yang lama untuk
+          memahami dan memodifikasi kode programnya.
+    \item \textit{Monolithic Software} biasa terdapat \textit{``dependency hell''} yang menyebabkan akan sangat sulit untuk
+          menambahkan atau meng-\textit{update library} dan akan berdampak terhadap inkonsistensi sistem.
+    \item Perubahan terhadap satu modul dalam sistem monolith membutuhkan sistem tersebut untuk dilakukan \textit{reboot}.
+          Hal ini berarti akan mengakibatkan \textit{downtime} pada sistem ketika akan menjalankan sistem dengan versi baru.
+    \item \textit{Monolithic Software} terdapat limitasi untuk melakukan scaling.
+    \item Terdapat \textit{lock-in} pada teknologi yang akan digunakan.
+\end{itemize}
+
+Untuk mengatasi beberapa masalah terkait \textit{Monolithic Software}, diperlukan pendekatan
+baru dalam membangun perangkat lunak. Salah satu pendekatan yang dapat digunakan adalah dengan
+menggunakan arsitektur \textit{Microservice}.
+Prinsip dasar untuk mendesain sebuah perangkat lunak tetap diterapkan pada proses pembangunan microservice itu sendiri.
+Perangkat lunak akan tetap dibagi menjadi beberapa komponen. Hal tersebut dilakukan untuk mempermudah dalam
+pengembangan \textit{microservice} yang bersifat independen.
+
+\vspace{0.5cm}
+\section{Kubernetes} \label{sec:Kubernetes}
+Materi pada bab 2.2 ini bersumber dari dokumentasi Kubernetes \cite{kubernetes2021What} dan buku Kubernetes in Action \cite{KubernetesBook}.
+Kubernetes adalah \textit{platform} yang berfungis untuk mengatur \textit{deployment} sebuah aplikasi yang sudah
+dibuat menjadi sebuah \textit{container} atau dapat disebut dengan \textit{containerized application}.
+Kubernetes merupakan sebuah \textit{open-source} yang dikembangkan oleh Google untuk membantu proses orkestrasi pada skala besar.
+Pada tahun 2014, Google memutuskan untuk membuat \textit{kubernetes} menjadi proyek \textit{open-sourced} yang
+akan dikelola oleh \textit{Cloud Native Computing Foundation} (CNCF).
+
+Pada skala \textit{production} dalam industri, \textit{kubernetes} umumnya digunakan
+untuk memudahkan dalam melakukan \textit{deployment} aplikasi agar selalu berada pada kondisi ideal
+yang didefinisikan oleh pengguna. Beberapa fungsi \textit{kubernetes} antara lain:
+\begin{itemize}
+    \item \textit{Deployment} dan \textit{scaling} aplikasi.
+    \item \textit{Rolling updates} dan \textit{rollbacks} aplikasi.
+    \item \textit{Service discovery} dan \textit{load balancing}.
+    \item \textit{Storage orchestration}.
+    \item \textit{Automated rollouts and rollbacks}.
+    \item \textit{Self-healing} terhadap aplikasi yang berjalan.
+    \item Pengaturan konfigurasi dan \textit{secret} yang digunakan oleh aplikasi.
+    \item Abstraksi terhadap infrastruktur yang digunakan.
+\end{itemize}
+
+Dengan digunakannya \textit{kubernetes}, proses konfigurasi manual dalam \textit{deployment} menjadi tidak diperlukan.
+Ini membuat kesalahan dalam proses \textit{deployment} menjadi berkurang sehingga aplikasi menjadi dapat lebih diandalkan dan
+seorang \textit{software engineer} mempunyai lebih banyak waktu untuk fokus pada pengembangan aplikasi.
+
+\textbf{insert gambar komponen kubernetes disini}
+
+\textit{Kubernetes} terdiri dari beberapa komponen yang masing masing memiliki fungsi yang berbeda.
+Komponen ini saling berkoordinasi untuk melakukan orkestrasi pada \textit{container} yang berjalan.
+\textit{Kubernetes} terdiri dari 2 jenis server atau bisa disebut dengan \textit{node}:
+\begin{itemize}
+    \item \textit{Master Node}
+          \textit{Master Node} adalah node yang menjalan komponen yang terdapat pada \textit{control plane}
+          yang terdiri dari \textit{etcd, kube-apiserver, kube-scheduler, kube-controller-manager, cloud-controller-manager}.
+          yang akan mengkoordinasikan \textit{worker node}
+    \item \textit{Worker Node}
+          \textit{Worker Node} adalah node yang bertugas untuk mengeksekusi aplikasi yang dijalankan pada \textit{kubernetes}.
+          \textit{Worker Node} terdiri dari \textit{kubelet, kube-proxy, container runtime}.
+\end{itemize}
+Dalam sebuah \textit{cluster kubernetes}, umumnya terdapat 1 master dan banyak node.
+Gambar \textbf{nomor gambar} memberikan ilustrasi dari komponen yang terdapat pada \textit{kubernetes}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Komponen master
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\subsection{Komponen Master Node} \label{subsec:Komponen Master Node}
+\textit{Master Node} bertugas untuk menjalankan \textit{control-plane} pada sebuah \textit{cluster kubernetes}.
+\textit{Control-plane} sendiri terdiri dari beberapa komponen
+\begin{itemize}
+    \item \textit{etcd} \\
+          \textit{etcd} merupakan \textit{key-value store} yang digunakan untuk menyimpan konfigurasi
+          dari \textit{cluster kubernetes} yang terdiri dari informasi tentang \textit{node}, \textit{pod}, dan \textit{service}.
+          \textit{etcd} juga digunakan untuk menyimpan informasi tentang \textit{deployment} yang dilakukan pada \textit{cluster kubernetes}.
+    \item \textit{kube-apiserver} \\
+          \textit{kube-apiserver} merupakan \textit{REST API} yang digunakan untuk berkomunikasi dengan \textit{etcd}
+          dan juga dengan \textit{kubelet} yang berjalan pada \textit{worker node}.
+          \textit{kube-apiserver} juga digunakan untuk melakukan validasi terhadap \textit{request} yang masuk.
+    \item \textit{kube-scheduler} \\
+          \textit{kube-scheduler} bertugas untuk melakukan \textit{scheduling} terhadap \textit{pod} yang baru dibuat.
+          \textit{Pod} yang baru dibuat akan dijadwalkan pada \textit{node} yang tersedia.
+    \item \textit{kube-controller-manager} \\
+          \textit{kube-controller-manager} merupakan \textit{daemon} yang berfungsi untuk menjalankan \textit{controller}
+          yang digunakan untuk melakukan \textit{management} terhadap \textit{cluster kubernetes}.
+          \textit{Controller} yang digunakan antara lain:
+          \begin{itemize}
+              \item \textit{Node Controller} \\
+                    \textit{Node Controller} bertugas untuk melakukan \textit{monitoring} terhadap \textit{node} yang berjalan pada \textit{cluster kubernetes}.
+                    \textit{Node Controller} akan melakukan \textit{monitoring} terhadap \textit{node} yang berjalan pada \textit{cluster kubernetes}
+                    untuk memastikan bahwa \textit{node} tersebut masih dalam kondisi normal.
+                    Jika \textit{node} tersebut mengalami masalah maka \textit{node controller} akan melakukan \textit{eviction} terhadap \textit{pod} yang berjalan pada \textit{node} tersebut.
+              \item \textit{Replication Controller} \\
+                    \textit{Replication Controller} bertugas untuk mengatur jumlah \textit{pod} pada \textit{cluster}
+                    agar sesuai dengan \textit{desired state} yang telah didefinisikan,
+              \item \textit{Endpoint Controller} \\
+                    \textit{Endpoint Controller} bertugas untuk mengatur \textit{endpoint} yang digunakan untuk mengakses \textit{service}.
+                    Dengan ini, ketika jumlah \textit{pod} atau configurasu \textit{pod} yang berjalan pada \textit{cluster kubernetes} berubah,
+                    akses kepada \textit{pods} tidak akan berubah karena sudah dilakukan abstraksi oleh entitas \textit{servcie}
+              \item \textit{Service Account \& Token Controllers} \\
+                    \textit{Service Account \& Token Controllers} bertugas untuk membuat \textit{account} dan \textit{token} yang digunakan untuk mengakses \textit{API server}.
+                    Hal ini mengatur akses terhadap \textit{resource} yang ada pada \textit{cluster kubernetes}.
+          \end{itemize}
+    \item \textit{cloud-controller-manager}
+          Komponen ini berguas untuk integrasi fungsi-fungsi spesifik yang disediakan oleh \textit{cloud provider}
+          tertentu. Komponen ini memugkinkan fungsi fungsi tambahan dari \textit{cloud provider} yang digunakan
+          dapat langsung dijalankan melalui API yang disediakan oleh \textit{cloud provider} tersebut.
+          Komponen dari \textit{cloud-controller-manager} antara lain:
+          \begin{itemize}
+              \item \textit{Node Controller} \\
+                    \textit{Node controller} berfungsi memeriksa apakah sebuah \textit{node} telah dihapus ketika \textit{node} tersebut tidak memberi respons.
+              \item \textit{Route Controller} \\
+                    \textit{Route controller} berfungsi untuk mengatur \textit{route network} pada \textit{cloud provider} yang digunakan.
+                    Umumya \textit{cloud provider} akan memiliki konfigurasi \textit{network} yang berbeda-beda.
+              \item \textit{Service Controller} \\
+                    \textit{Service controller} berfungsi untuk mengatur \textit{resource service} seperti \textit{load balancer}
+                    yang disediakan oleh \textit{cloud provider} yang digunakan.
+          \end{itemize}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Komponen worker node
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\subsection{Komponen Worker node} \label{subsec:Komponen Worker Node}
+\textit{Worker node} adalah server yang menjalankan \textit{pod} yang ada pada \textit{deployment}.
+Pada \textit{worker node} terdapat beberapa komponen yang berjalan. Komponen-komponen tersebut antara lain:
+\begin{itemize}
+    \item \textit{kubelet} \\
+          \textit{kubelet} merupakan \textit{agent} yang berjalan pada \textit{worker node}.
+          \textit{kubelet} bertugas untuk menjalankan \textit{pod} yang telah didefinisikan pada \textit{deployment}.
+          \textit{kubelet} juga bertugas untuk melakukan \textit{monitoring} terhadap \textit{pod} yang berjalan pada \textit{worker node}.
+          \textit{kubelet} juga bertugas untuk melakukan \textit{health checking} terhadap \textit{pod} yang berjalan pada \textit{worker node}.
+          Jika \textit{pod} tersebut mengalami masalah maka \textit{kubelet} akan melakukan \textit{restart} terhadap \textit{pod} tersebut.
+    \item \textit{container runtime} \\
+          \textit{Container runtime} merupakan \textit{software} yang digunakan untuk menjalankan \textit{container}.
+          \textit{Container runtime} yang digunakan pada \textit{worker node} mendukung beberapa jenis \textit{container runetime},
+          contohnya: \textit{docker, containerd, cri-o} dan implementasi lain yang mengikuti standar \textit{kubernetes CRI} (\textit{Contianer Runtime Interface}).
+    \item \textit{kube-proxy} \\
+          \textit{Kube proxy} merupakan \textit{proxy} yang mengimplementasikan abstraksi dari
+          service dalam kubernetes. \textit{Kube proxy} menjalankan berbagai aturan network
+          untuk mengatur akses baik dari dalam atau luar cluster (\textit{egress}) ke dalam node (\textit{ingress}).
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Komponen Workload
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{0.5cm}
+\subsection{Kubernetes Workloads} \label{subsec:Komponen Worker Node}
+\textit{Workloads} merupakan sebuah aplikasi yang berjalan pada \textit{Kubernetes}.
+\textit{Workloads} bisa saja berupa satu atau beberapa aplikasi yang saling bekerja sama.
+Sebuah workload dieksekusi didalam sebuah \textit{pods}. \textit{Pod} merupakan sebuah entitas yang berisi satu atau lebih \textit{container}.
+\textit{Kubernetes} menyediakan beberapa \textit{built-in Workloads} seperti
+\textit{Deployment, StatefulSet, DaemonSet, Job, CronJob, ReplicaSet}.
+\begin{itemize}
+    \item \textit{Pod} \\
+          \textit{Pod} Pod merupakan object terkecil dalam Kubernetes.
+          Sebuah pod berisikan satu atau lebih container yang memiliki sistem penyimpanan
+          dan jaringan yang sama dan mempunyai spesifikasi untuk menjalankan container-container tersebut.
+          Pada praktik umumnya sebuah \textit{pod} hanya berisi satu container. Namun, ada beberapa kasus
+          dimana sebuah \textit{pod} dapat berisi lebih dari satu container seperti ketika kita ingin menjalankan
+          sebuah \textit{sidecar container} yang berfungsi untuk membantu container utama dalam menjalankan
+          suatu fungsi tertentu.
+    \item \textit{Deployment} \\
+          \textit{Deployment} merupakan configurasi deklaratif yang digunakan untuk mendefinisikan
+          \textit{desired state} dari sebuah \textit{pod} atau \textit{replica set}.Pada sebuah \textit{deployment}
+          kita dapat mendefinisikan berapa banyak \textit{pod} yang ingin kita jalankan, \textit{image} apa yang
+          ingin kita gunakan, dan juga \textit{label} apa yang ingin kita gunakan. \textit{Deployment} juga
+          dapat melakukan \textit{rolling update} terhadap \textit{pod} yang sudah ada.
+          Jika sebuah \textit{Deployment} dihapus, maka \textit{pod} yang merupakan bagian dari \textit{Deployment} tersebut
+          juga akan ikut terhapus.
+    \item \textit{StatefulSet} \\
+          \textit{StatefulSet} merupakan \textit{workload} yang digunakan untuk menjalankan aplikasi yang \textit{stateful}.
+          Perbedaan utama antara \textit{StatefulSet} dan \textit{Deployment} adalah \textit{StatefulSet} akan menyimpan
+          identitas untuk setiap \textit{pod}.
+    \item \textit{DaemonSet} \\
+          \textit{DaemonSet} merupakan \textit{workload} yang digunakan untuk memastikan bahwa setiap (atau sebagian) \textit{node}
+          memiliki salinan \textit{pod}. Ketika node baru ditambahkan ke kluster, \textit{pod} juga akan ditambahkan ke node tersebut.
+    \item \textit{Jobs} \\
+          \textit{DaemonSet} merupakan \textit{workdload} yang digunakan untuk membuat \textit{pod} yang hanya berjalan
+          untuk menyelesaikan sebuah \textit{task} tertentu. \textit{Job} akan dihapus setelah \textit{task} tersebut selesai.
+          Contoh sederhana dari \textit{job} adalah melakukan komputasi untuk menentukan nilai $\pi$ hingga 1000 digit.
+    \item \textit{CronJob} \\
+          \textit{CronJob} merupakan \textit{workload} yang digunakan untuk menjalankan \textit{job} secara terjadwal.
+          \textit{CronJob} akan menjalankan \textit{job} sesuai dengan jadwal yang telah ditentukan.
+    \item \textit{ReplicaSet} \\
+          \textit{ReplicaSet} merupakan \textit{workload} yang digunakan untuk membuat \textit{pod} yang memiliki spesifikasi yang sama.
+          \textit{ReplicaSet} akan membuat \textit{pod} baru jika \textit{pod} yang sudah ada mengalami kegagalan.
+\end{itemize}
+
+\vspace{0.5cm}
+\subsection{Kubernetes Services} \label{subsec:Kubernetes Services}
