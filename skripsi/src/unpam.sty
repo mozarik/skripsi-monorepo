@@ -28,7 +28,7 @@
 \usepackage{graphicx}
 
 % Untuk mengatur spacing antara paragraf
-\usepackage{parskip}
+% \usepackage{parskip}
 
 % Membuat indent
 \usepackage{indentfirst}
@@ -43,15 +43,22 @@
 % Untuk menambahkan package link
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
-  	pdftitle={Skripsi},
-  	pdfauthor={\textcopyright\ Imron Rosdiana},
-  	pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
-  	pdfsubject={PERANCANGAN SISTEM INFORMASI KOPERASI SIMPAN PINJAM BERBASIS WEB},
-  	pdfkeywords={Latex, Template Latex}
-	}
+	pdftitle={Skripsi},
+	pdfauthor={\textcopyright\ Muhammad Zein Ihza Fahrozi},
+	pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
+	pdfsubject={Automatic Deployment Aplikasi berbasis Microservice Pada
+			Platform Kubernetes Dengan Metode Pull-Up},
+	pdfkeywords={Latex, Template Latex}
+}
 
 % Membuat seluruh tulisan menjadi Times New Roman. 
-\usepackage{pslatex}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
+\usepackage{setspace}
+\onehalfspacing
+% \usepackage{pslatex}
+% \usepackage{fontspec}
+% \setmainfont{Times New Roman}
 
 % Merubah numbering chapter dan section untuk judul setiap bab menggunakan romawi dan judul anak bab menggunakan arabic
 \renewcommand\thechapter{\Roman{chapter}}
@@ -66,10 +73,10 @@
 % \renewcommand{\cftlottitlefont}{\hfil\large\bfseries\MakeUppercase}
 \renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}} % for parts
 \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}} % for chapters
-\renewcommand{\contentsname}{\hspace*{\fill}\bfseries\Large DAFTAR ISI\hspace*{\fill}}   
+\renewcommand{\contentsname}{\hspace*{\fill}\bfseries\Large DAFTAR ISI\hspace*{\fill}}
 \renewcommand\listfigurename{\hspace*{\fill}\bfseries\Large DAFTAR GAMBAR\hspace*{\fill}}
 \renewcommand\listtablename{\hspace*{\fill}\bfseries\Large DAFTAR TABEL\hspace*{\fill}}
- 
+
 % Mengatur font section
 \usepackage{sectsty}
 \sectionfont{\fontsize{12}{14}\selectfont}
@@ -79,8 +86,8 @@
 % Untuk merupakan format penulisan BAB
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
-	{\doublespacing\fontsize{14pt}{16pt}\bfseries}
-	{\MakeUppercase{\chaptertitlename\ \thechapter}\filcenter}		{0pt}{\centering\uppercase}
+{\doublespacing\fontsize{14pt}{16pt}\bfseries}
+{\MakeUppercase{\chaptertitlename\ \thechapter}\filcenter}		{0pt}{\centering\uppercase}
 \titlespacing*{\chapter}{0pt}{-1cm}{20pt}
 
 % Mengatur spacing section
@@ -90,7 +97,7 @@
 {0pt}{0pt}{-0.05cm}
 \titlespacing*{\subsubsection}
 {0pt}{0pt}{-0.05cm}
-	
+
 % Digunakan untuk mengatur caption dalam dokumen.
 \usepackage[font=footnotesize,format=plain,labelfont=bf,up,textfont=up]{caption}
 % Untuk menghapus titik dua (colon)
@@ -121,12 +128,13 @@
 % Menggatur setting halaman 
 \usepackage{geometry}
 \geometry{
-  left=4cm,            % <-- you want to adjust this
-  top=3cm,
-  right=3cm,
-  bottom=3cm,
-  headheight=3cm,       % <-- and this
-  headsep=2ex,          % <-- and this
+	a4paper,
+	left=4cm,            % <-- you want to adjust this
+	top=4cm,
+	right=3cm,
+	bottom=3cm,
+	headheight=1.2cm,       % <-- and this
+	headsep=1cm,          % <-- and this
 }
 
 % Teks testing
