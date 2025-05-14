@@ -59,6 +59,7 @@
 % \usepackage{pslatex}
 % \usepackage{fontspec}
 % \setmainfont{Times New Roman}
+\renewcommand{\figurename}{Gambar}
 
 % Merubah numbering chapter dan section untuk judul setiap bab menggunakan romawi dan judul anak bab menggunakan arabic
 \renewcommand\thechapter{\Roman{chapter}}
@@ -76,6 +77,14 @@
 \renewcommand{\contentsname}{\hspace*{\fill}\bfseries\Large DAFTAR ISI\hspace*{\fill}}
 \renewcommand\listfigurename{\hspace*{\fill}\bfseries\Large DAFTAR GAMBAR\hspace*{\fill}}
 \renewcommand\listtablename{\hspace*{\fill}\bfseries\Large DAFTAR TABEL\hspace*{\fill}}
+\renewcommand{\cftchappresnum}{BAB }
+\renewcommand{\cftchapaftersnum}{}
+\setlength{\cftchapnumwidth}{4em}
+% Mengatur vertical spacing untuk bab
+\setlength{\cftbeforechapskip}{0.5em}  % Jarak vertikal sebelum bab
+\setlength{\cftbeforesecskip}{0.5em}   % Jarak vertikal sebelum sub bab
+\setlength{\cftbeforesubsecskip}{0.2em}
+
 
 % Mengatur font section
 \usepackage{sectsty}

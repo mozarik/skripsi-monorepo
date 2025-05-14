@@ -1,0 +1,37 @@
+\renewcommand{\chaptername}{BAB}
+%-----------------------------------------------------------------------------%
+\chapter{TINJAUAN PUSTAKA}
+%-----------------------------------------------------------------------------%
+
+\vspace{4.5pt}
+\setlength{\parskip}{0.5em}
+\section{Penelitian Terdahulu} \label{sec:penelitian_terdahulu}
+
+Dalam beberapa tahun terakhir, kebutuhan akan otomasi dan standarisasi proses deployment pada aplikasi berbasis microservices di lingkungan Kubernetes mengalami peningkatan yang signifikan.
+Hal ini sejalan dengan semakin kompleksnya arsitektur aplikasi modern yang menuntut efisiensi, keamanan, serta keandalan dalam pengelolaan siklus hidup perangkat lunak. Salah satu pendekatan yang berkembang pesat untuk menjawab tantangan tersebut adalah GitOps,
+di mana seluruh konfigurasi dan proses deployment didefinisikan secara deklaratif di dalam repository Git yang berfungsi sebagai sumber kebenaran utama (single source of truth). Argo CD merupakan salah satu tools GitOps yang banyak diadopsi oleh industri maupun komunitas open source karena kemampuannya dalam melakukan sinkronisasi otomatis antara repository Git dan cluster Kubernetes, serta menyediakan fitur visualisasi status deployment secara real-time.
+
+Penelitian yang dilakukan oleh Korhonen \cite{Korhonen2021} secara khusus mengevaluasi penerapan Argo CD dalam manajemen layanan berbasis Kubernetes.
+Dalam penelitian tersebut, Korhonen mengimplementasikan pipeline CI/CD dengan menggunakan GitLab sebagai sumber repository dan Argo CD sebagai alat continuous delivery pada cluster Kubernetes yang dibangun dengan MicroK8s.
+Hasil penelitian menunjukkan bahwa Argo CD mampu meningkatkan konsistensi konfigurasi antar lingkungan, memudahkan rollback saat terjadi kegagalan deployment,
+serta mempercepat proses delivery aplikasi melalui mekanisme automated synchronization.
+Selain itu, Argo CD juga dinilai mempermudah proses audit dan monitoring perubahan konfigurasi karena seluruh riwayat perubahan tercatat dengan baik di repository Git.
+Namun demikian, Korhonen juga menyoroti pentingnya perencanaan arsitektur dan pengelolaan dependensi layanan agar tidak terjadi konflik konfigurasi yang dapat menghambat proses deployment secara keseluruhan.
+
+Studi lain yang dilakukan oleh Sharma et al. \cite{Sharma2022} membandingkan performa deployment antara Argo CD dan Flux sebagai tools GitOps pada lingkungan multi-cluster Kubernetes.
+Penelitian ini menggunakan beberapa parameter evaluasi seperti kecepatan deployment, kemudahan integrasi dengan pipeline CI/CD, serta kemampuan visualisasi status aplikasi.
+Hasilnya, Argo CD dinilai lebih unggul dalam hal user experience, khususnya pada fitur visualisasi status deployment dan kemudahan integrasi dengan berbagai pipeline CI/CD yang umum digunakan di industri.
+Di sisi lain, Flux memiliki keunggulan pada fleksibilitas manajemen konfigurasi dan kemudahan dalam melakukan kustomisasi pada skenario deployment yang kompleks.
+Kedua tools ini sama-sama mampu mengurangi potensi human error, meningkatkan traceability, serta mempercepat proses deployment aplikasi secara signifikan jika dibandingkan dengan metode deployment manual atau konvensional.
+
+Selain aspek fungsionalitas dan performa,
+isu keamanan dalam implementasi Argo CD juga menjadi perhatian dalam beberapa penelitian.
+Kumar \cite{Kumar2023} membahas secara mendalam tantangan keamanan yang dihadapi dalam penggunaan Argo CD,
+terutama terkait pengelolaan secrets dan akses kontrol pada cluster Kubernetes. Dalam penelitian tersebut,
+ditemukan bahwa praktik terbaik yang dapat diterapkan untuk meminimalisir risiko kebocoran data adalah dengan mengintegrasikan
+Argo CD dengan external secrets management seperti HashiCorp Vault atau AWS Secrets Manager, serta menerapkan prinsip least privilege
+pada setiap komponen yang terlibat dalam proses deployment. Selain itu, Kumar juga merekomendasikan penerapan audit log yang komprehensif
+dan pemantauan akses secara real-time untuk meningkatkan keamanan dan akuntabilitas sistem.
+
+Berdasarkan tinjauan terhadap penelitian-penelitian terdahulu, dapat disimpulkan bahwa penggunaan Argo CD dalam workflow GitOps membawa dampak positif yang signifikan terhadap efisiensi, keamanan, dan auditability proses deployment aplikasi berbasis microservices di Kubernetes. Namun demikian, masih terdapat ruang penelitian lebih lanjut terkait evaluasi komparatif antara metode pull-based deployment (seperti Argo CD) dengan metode push-based, serta analisis mendalam mengenai best practice implementasi Argo CD pada skala enterprise, khususnya dalam konteks lingkungan produksi yang sangat dinamis dan kompleks. Oleh karena itu, penelitian ini berfokus pada analisis dan evaluasi penggunaan Argo CD sebagai operator GitOps pada Kubernetes, dengan tujuan memberikan rekomendasi strategis bagi organisasi yang ingin mengadopsi otomasi deployment berbasis GitOps secara optimal.
+\newpage
