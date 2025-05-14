@@ -28,11 +28,10 @@ Selain itu, peneliti juga menelaah studi komparatif antara Argo CD dan tools Git
 serta kajian terkait tantangan keamanan dalam implementasi Argo CD yang dibahas oleh Kumar \cite{Kumar2023}. Dengan mengkaji berbagai referensi tersebut,
 peneliti memperoleh pemahaman yang komprehensif mengenai teori dan praktik automasi deployment berbasis GitOps, sehingga dapat merancang dan mengimplementasikan solusi yang sesuai dengan kebutuhan penelitian.
 
-\subsection{Perancangan (Design)}
+\section{Perancangan (Design)}
 Setelah melakukan tahap studi literatur dan analisis kebutuhan sistem, tahap selanjutnya adalah melakukan perancangan sistem automasi deployment yang akan diimplementasikan. Pada tahap studi literatur yang telah dilakukan, peneliti mengambil rancangan dasar dari penelitian-penelitian terdahulu, khususnya model GitOps yang dibahas oleh Ramadoni \cite{Ramadoni2021} dan arsitektur Argo CD yang dijelaskan oleh Korhonen \cite{Korhonen2021}.
 
 Pada tahap ini, peneliti melakukan modifikasi terhadap rancangan yang sudah ada untuk mengadaptasi implementasi Argo CD pada lingkungan bare-metal (non-cloud) dengan memanfaatkan platform virtualisasi Proxmox. Modifikasi ini penting dilakukan karena sebagian besar implementasi GitOps dan Argo CD yang ada di literatur berfokus pada lingkungan cloud \cite{Bolscher2019}, sementara penelitian ini bertujuan untuk mengimplementasikan solusi serupa pada infrastruktur on-premise.
-
 Perancangan yang dilakukan meliputi beberapa aspek utama, yaitu:
 
 \begin{enumerate}
@@ -42,5 +41,17 @@ Perancangan yang dilakukan meliputi beberapa aspek utama, yaitu:
     \item Perancangan strategi deployment dan rollback yang efektif untuk aplikasi berbasis microservice
 \end{enumerate}
 
-Langkah terakhir yang akan dilakukan adalah merancang konfigurasi dan manifest Kubernetes yang diperlukan untuk implementasi Argo CD pada lingkungan bare-metal, serta menyiapkan dokumentasi teknis yang diperlukan untuk proses implementasi. Dokumentasi ini akan mencakup detail tentang arsitektur sistem, komponen-komponen utama, dan alur kerja dari proses deployment yang diusulkan.
+\section{Implementasi Code Automasi (Coding)}
+Pada tahap implementasi ini dilakukan penulisan kode terhadap beberapa microservice yang akan menjadi usecase yang akan digunakan menggunakan bahasa Go.
+Pada tahap ini juga akan dilakukan automasi script untuk membuat infrastruktur dimana ArgoCD akan berjalan. Tahap implementasi akan menghasilkan sebuah sistem automasi, microservices,
+beserta infrastructur tempat berjalannya ArgoCD yaitu infrastructure kubernetes.
+
+\section{Pengujian dan Analisis (Testing dan Analysis)}
+Dalam pengujian dan analisis hasil dari implementasi yang dibuat akan dilakukan tahap pengujian terlebih dahulu.
+Pengujian dan analisis dilakukan untuk mencari dan mengidentifikasi kesalahan pada sebuah sistem. Pengujian akan dilakukan menggunakan black-box testing dengan metode validasi User Acceptance Testing
+dengan kriteria usability testing.
+
+\section{Kesimpulan}
+Kesimpulan adalah tahapan terakhir setelah dilakukan implementasi dan pengujian. Pada tahap ini peneliti akan membuat kesimpulan untuk bertujuan
+mengetahui letak kelebihan dan kekurangan sistem yang telah dikembangkan.
 \newpage
