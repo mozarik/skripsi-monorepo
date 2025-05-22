@@ -45,8 +45,19 @@ ke tahap environment produksi juga bisa dilakukan secara automatis, tetapi biasa
 \section{Deployment Pada Kubernetes}
 Pada padasarnya terdapat 2 metode yang digunakan untuk melakukan
 deployment pada sebuah aplikasi pada kubernetes yaitu pull method dan push method \cite{Ramadoni2021}.
-Perbedaan  mendasar dari pull method dan push method terdapat pada agent yang melakukan
-deployment \cite{GitOps}. Pada push method sebuah agent melakukan deployment sebuah  service terhadap suatu platform (eg, kubernetes).
+Perbedaan mendasar dari pull method dan push method terdapat pada agent yang melakukan
+deployment \cite{GitOps}. Pada push method sebuah agent melakukan deployment sebuah service terhadap suatu platform (eg, kubernetes).
+
+\subsection{Literatur Pull-based Deployment}
+Berdasarkan penelitian terbaru, pendekatan pull-based deployment telah terbukti memberikan beberapa keunggulan signifikan dalam konteks GitOps \cite{Korhonen2021}. Beberapa keunggulan utama dari pull-based deployment antara lain:
+\begin{enumerate}
+    \item \textbf{Keamanan yang Lebih Baik}: Tidak memerlukan kredensial akses eksternal ke cluster Kubernetes, sehingga mengurangi risiko kebocoran kredensial.
+    \item \textbf{State yang Konsisten}: Operator secara berkala memeriksa dan menyinkronkan state yang diinginkan dengan state aktual di cluster.
+    \item \textbf{Recovery Otomatis}: Dapat secara otomatis mengembalikan konfigurasi ke state yang diinginkan jika terjadi perubahan yang tidak diinginkan.
+    \item \textbf{Multi-cluster Management}: Memudahkan pengelolaan beberapa cluster Kubernetes sekaligus dari satu sumber kebenaran.
+\end{enumerate}
+
+Menurut \cite{Sharma2022}, implementasi pull-based deployment dengan Argo CD telah menunjukkan peningkatan keandalan deployment sebesar 40\% dibandingkan dengan pendekatan push-based tradisional.
 \vspace{0.5cm}
 \subsection{Push-based Deployment}
 Push-based deployment \cite{GitOps} merupakan strategy yang popular yang diimplementasikan oleh
@@ -80,9 +91,70 @@ tidak perlu mengetahui environment eksternal karena semua sudah ada pada kluster
 \vspace{0.5cm}
 
 \newpage
+\section{Alur Penelitian dan Implementasi}
+Penelitian ini akan mengikuti alur metodologi yang terstruktur untuk memastikan pencapaian tujuan penelitian. Berikut adalah bagan alur penelitian yang akan diimplementasikan:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/Tahapan Skripsi.png}
+    \caption{Alur Penelitian dan Implementasi}
+    \label{fig:alur_penelitian}
+\end{figure}
+
+Adapun penjelasan rinci dari setiap tahapan adalah sebagai berikut:
+\begin{enumerate}
+    \item \textbf{Studi Literatur}: Mengkaji teori dan penelitian terdahulu terkait GitOps, Argo CD, dan Kubernetes.
+    \item \textbf{Perancangan Sistem}: Merancang arsitektur dan alur kerja sistem automasi deployment.
+    \item \textbf{Implementasi Infrastruktur}: Menyiapkan lingkungan Kubernetes dan komponen pendukungnya.
+    \item \textbf{Implementasi Argo CD}: Mengintegrasikan Argo CD ke dalam cluster Kubernetes.
+    \item \textbf{Pengujian dan Evaluasi}: Melakukan pengujian fungsional dan non-fungsional.
+    \item \textbf{Analisis Hasil}: Menganalisis hasil pengujian dan mengevaluasi pencapaian tujuan penelitian.
+\end{enumerate}
+
+\section{Skenario Pengujian}
+Untuk memastikan bahwa implementasi Argo CD berfungsi sesuai dengan yang diharapkan, akan dilakukan pengujian dengan skenario sebagai berikut:
+
+\subsection{Test Case 1: Deployment Aplikasi}
+\begin{itemize}
+    \item \textbf{Tujuan}: Memverifikasi bahwa perubahan kode aplikasi yang di-push ke repository dapat terdeploy otomatis ke cluster Kubernetes.
+    \item \textbf{Langkah-langkah}:
+    \begin{enumerate}
+        \item Lakukan perubahan pada kode aplikasi
+        \item Push perubahan ke repository Git
+        \item Amati proses sinkronisasi Argo CD
+        \item Verifikasi aplikasi berjalan dengan versi terbaru
+    \end{enumerate}
+    \item \textbf{Hasil yang Diharapkan}: Aplikasi terdeploy otomatis dengan versi terbaru tanpa intervensi manual.
+\end{itemize}
+
+\subsection{Test Case 2: Rollback Otomatis}
+\begin{itemize}
+    \item \textbf{Tujuan}: Memverifikasi bahwa Argo CD dapat mendeteksi dan melakukan rollback ketika terjadi kegagalan deployment.
+    \item \textbf{Langkah-langkah}:
+    \begin{enumerate}
+        \item Deploy konfigurasi yang tidak valid
+        \item Amati proses deteksi kegagalan oleh Argo CD
+        \item Verifikasi sistem kembali ke state terakhir yang stabil
+    \end{enumerate}
+    \item \textbf{Hasil yang Diharapkan}: Sistem otomatis melakukan rollback ke versi stabil sebelumnya.
+\end{itemize}
+
+\subsection{Test Case 3: Multi-Environment Deployment}
+\begin{itemize}
+    \item \textbf{Tujuan}: Memverifikasi kemampuan Argo CD dalam mengelola deployment di berbagai environment (development, staging, production).
+    \item \textbf{Langkah-langkah}:
+    \begin{enumerate}
+        \item Konfigurasi Argo CD untuk multiple environments
+        \item Lakukan deployment ke environment development
+        \item Promosikan ke staging setelah pengujian
+        \item Lakukan final deployment ke production
+    \end{enumerate}
+    \item \textbf{Hasil yang Diharapkan}: Deployment berhasil dilakukan di semua environment dengan konfigurasi yang sesuai.
+\end{itemize}
+
 \section{Arsitektur Cluster Kubernetes yang akan digunakan}
 Dibawah ini merupakan rancangan arsitektur high-level pada implementasi Kubernetes
-nantinya. Disini menggunakan Metal-LB sebagai provider load  balancer dan Traefik sebagai ingress controller.
+nantinya. Disini menggunakan Metal-LB sebagai provider load balancer dan Traefik sebagai ingress controller.
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{figures/kubernetes-arch.png}
