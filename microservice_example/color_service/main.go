@@ -14,5 +14,5 @@ func main() {
         color := colors[rand.Intn(len(colors))]
         fmt.Fprint(w, color)
     })
-    http.ListenAndServe(":8082", nil)
+    http.ListenAndServe(":8080", nil)
 }
