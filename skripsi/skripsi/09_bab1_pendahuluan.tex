@@ -100,13 +100,7 @@ yang efektif \cite{Fritzsch2019}. Penelitian yang dilakukan oleh Ramadoni dkk.
 permasalahan mekanisme \textit{rollback} dan keamanan alur CI/CD.
 
 Namun demikian, penelitian Ramadoni dkk. \cite{Ramadoni2021} yang menggunakan pendekatan
-\textit{pull-based} belum memberikan penjelasan mendalam mengenai pertimbangan
-pemilihan metode tersebut dibandingkan dengan pendekatan \textit{push-based}.
-Selain itu, penelitian tersebut juga belum melakukan analisis komparatif terhadap
-\textit{tools} operator GitOps, khususnya ArgoCD, dalam konteks lingkungan Kubernetes.
-Oleh karena itu, penelitian ini bertujuan untuk menganalisis efektivitas berbagai
-\textit{tools} operator GitOps dan membandingkan kinerja antara pendekatan
-\textit{pull-based} dan \textit{push-based} dalam kerangka kerja DevOps.
+\textit{pull-based} belum memberikan penjelasan mendalam mengenai pertimbangan pemilihan dalam permasalahan deployments Argo CD itu sendiri.
 % \section{Identifikasi Masalah}
 % Berdasarkan latar belakang di atas dapat diidentifikasi masalah-masalah sebagai berikut:
 % \begin{enumerate}[nolistsep,leftmargin=0.5cm]
@@ -115,37 +109,30 @@ Oleh karena itu, penelitian ini bertujuan untuk menganalisis efektivitas berbaga
 %     \item Masalah 3.
 % \end{enumerate}
 \vspace{0.5cm}
+\newpage
 \section{Rumusan Masalah}
-Berdasarkan latar belakang masalah diatas, adapun rumusan masalah pada penelitian ini antara lain:
-\begin{enumerate}[label=\alph*.]
-    \item Bagaimana cara sebuah service yang source nya diubah dilakukan  deployment secara otomatis pada sistem kubernetes dengan metode GitOps ?
-    \item Bagaimana cara provisioning infrastruktur yang dibutuhkan oleh service  secara otomatis pada sistem microservice yang berjalan pada kubernetes?
-    \item Bagaimana perbedaan mendasar dari tools yang digunakan sebagai operator GitOps pada sistem kubernetes?
-    \item Bagaimana hasil analisis tipe deployment Pull-based dan Push-based pada continous deployment?
+Berdasarkan latar belakang yang telah diuraikan, terdapat beberapa permasalahan utama yang menjadi fokus penelitian ini, yaitu:
+\begin{enumerate}[label=\alph*., leftmargin=1.5\parindent]
+    \item Bagaimana mengimplementasikan mekanisme \textit{continuous deployment} berbasis GitOps yang dapat secara otomatis melakukan \textit{deployment} pada sistem Kubernetes ketika terjadi perubahan kode sumber \textit{service}?
+    \item Bagaimana merancang dan mengimplementasikan \textit{infrastructure as code} untuk melakukan \textit{provisioning} infrastruktur yang dibutuhkan oleh \textit{microservice} secara otomatis pada lingkungan Kubernetes?
 \end{enumerate}
 
 \vspace{0.5cm}
 \section{Tujuan Penelitian}
-Berdasarkan rumusan masalah yang telah diformulasikan, maka terdapat beberapa tujuan pada studi ini:
-\begin{enumerate}[label=\alph*.]
-    \item Melakukan implementasi continous deployment pada sebuah sistem microservice yang berjalan pada kubernetes.
-    \item Melakukan analisis terhadap metode deployment secara automatis menggunakan Pull-based dan Push-based pada continuous deployment.
-    \item Melanjutkan saran dari penelitian sebelumnya \cite{Ramadoni2021} dengan merancang  workflow continuous integration yang diintegrasikan dengan ArgoCD.
+Penelitian ini bertujuan untuk:
+\begin{enumerate}[label=\alph*., leftmargin=1.5\parindent]
+    \item Mengimplementasikan \textit{continuous deployment} pada arsitektur \textit{microservice} yang berjalan di Kubernetes dengan memanfaatkan prinsip-prinsip GitOps.
+    \item Mengembangkan \textit{workflow} terintegrasi antara \textit{continuous integration} menggunakan GitHub Actions dengan ArgoCD sebagai operator GitOps, sebagai kelanjutan dari penelitian sebelumnya \cite{Ramadoni2021}.
 \end{enumerate}
 
-% \section{Manfaat Penelitian}
-% \begin{enumerate}[nolistsep,leftmargin=0.5cm]
-%     \item Manfaat bagi pribadi.
-%     \item Manfaat bagi institusi.
-%     \item Manfaat bagi masyarakan umum.
-% \end{enumerate}
 \vspace{0.5cm}
 \section{Batasan Masalah}
-Dalam penelitian ini, peneliti akan membatasi masalah yang akan diteliti antara lain:
-\begin{enumerate}[label=\alph*.]
-    \item Menggunakan kubernetes sebagai alat orkestrasi \textit{container}.
-    \item Implementasi CI/CD dilakukan menggunakan GitLabCI.
-    \item Container runtime yang digunakan adalah Docker.
-    \item perangkat lunak microservice yang digunakan berupa perangkat lunak berbasis web.
+Agar penelitian ini lebih terfokus, maka dilakukan pembatasan masalah sebagai berikut:
+\begin{enumerate}[label=\alph*., leftmargin=1.5\parindent]
+    \item Platform orkestrasi \textit{container} yang digunakan adalah Kubernetes versi terbaru yang mendukung Custom Resource Definitions (CRDs).
+    \item \textit{Continuous Integration/Continuous Deployment} (CI/CD) diimplementasikan menggunakan GitHub Actions sebagai \textit{workflow} otomatisasi.
+    \item \textit{Container runtime} yang digunakan adalah Docker dengan \textit{image} yang kompatibel dengan standar OCI (\textit{Open Container Initiative}).
+    \item \textit{Microservice} yang digunakan dalam pengujian adalah aplikasi berbasis web dengan arsitektur yang terdistribusi.
+    \item \textit{Version Control System} (VCS) yang digunakan adalah GitHub sebagai \textit{single source of truth} untuk \textit{infrastructure as code} dan kode aplikasi.
 \end{enumerate}
 \newpage
