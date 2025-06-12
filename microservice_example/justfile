@@ -1,0 +1,34 @@
+# Justfile for building Go microservices into the out/ directory
+
+# Ensure the output directory exists
+out-dir:
+    mkdir -p out
+
+# Build auth_service
+build-auth: out-dir
+    go build -o out/auth_service ./auth_service/main.go
+
+# Build color_service
+build-color: out-dir
+    go build -o out/color_service ./color_service/main.go
+
+# Build htmx_frontend
+build-htmx: out-dir
+    go build -o out/htmx_frontend ./htmx_frontend/main.go
+
+# Build all services
+build: build-auth build-color build-htmx
+
+# Run all services (in separate terminals or use & for background)
+run-auth:
+    ./out/auth_service
+
+run-color:
+    ./out/color_service
+
+run-htmx:
+    ./out/htmx_frontend
+
+# Clean output directory
+clean:
+    rm -rf out

@@ -90,6 +90,3 @@ sympy-plots-for-*.tex/
 
 # Build Directory
 build/
-
-# PDF
-*.pdf
