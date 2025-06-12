@@ -63,7 +63,7 @@ metadata:
 spec:
   ingressClassName: external
   rules:
-  - host: "htmx-frontend.zeinfahrozi.my.id"  
+  - host: "htmx-frontend.zeinfahrozi.my.id"
     http:
       paths:
       - path: /

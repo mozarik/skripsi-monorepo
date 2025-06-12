@@ -63,7 +63,7 @@ metadata:
 spec:
   ingressClassName: external
   rules:
-  - host: "color.zeinfahrozi.my.id"  
+  - host: "color.zeinfahrozi.my.id"
     http:
       paths:
       - path: /
