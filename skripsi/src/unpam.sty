@@ -235,6 +235,21 @@ literate = {---}{{\ProcessThreeDashes}}3
 % untuk insert pdf
 \usepackage{pdfpages}
 
+% background watermark
+\usepackage{everypage}
+\usepackage{tikz}
+
+% Define the watermark command
+\newcommand\AddWatermark{
+    \begin{tikzpicture}[remember picture,overlay]
+        \node[opacity=0.2,inner sep=0pt] at (current page.center) 
+            {\includegraphics[width=0.7\paperwidth,keepaspectratio]{figures/watermark-logo-umm.jpg}};
+    \end{tikzpicture}%
+}
+
+% Add watermark to every page by default
+\AddEverypageHook{\AddWatermark}
+
 % Untuk mengatur spacing daftar gambar
 \newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
 \addtocontents{lof}{\protect\noaddvspace}
