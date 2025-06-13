@@ -14,7 +14,7 @@ import (
 // )
 
 const (
-    version         = "v1.0.0"
+    version         = "v2.0.0"
     authServiceURL  = "http://auth.zeinfahrozi.my.id/auth"
     colorServiceURL = "http://color.zeinfahrozi.my.id/color"
 )
@@ -34,7 +34,7 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
     html := fmt.Sprintf(`<!DOCTYPE html>
 <html>
 <head>
-    <title>HTMX Frontend</title>
+    <title>HTMX Frontend (Created By Zein)</title>
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 <body>
