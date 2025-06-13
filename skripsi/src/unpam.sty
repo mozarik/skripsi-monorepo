@@ -44,16 +44,16 @@
 \usepackage{minted}
 \usemintedstyle{vs}  % Gaya warna seperti Visual Studio
 \setminted{
-    fontsize=\small,
-    breaklines=true,
-    breakanywhere=true,
-    breaksymbolleft=\small\color{red!50!black},
-    frame=lines,
-    framesep=2mm,
-    baselinestretch=1.2,
-    linenos,
-    numbersep=5pt,
-    gobble=0
+	fontsize=\small,
+	breaklines=true,
+	breakanywhere=true,
+	breaksymbolleft=\small\color{red!50!black},
+	frame=lines,
+	framesep=2mm,
+	baselinestretch=1.2,
+	linenos,
+	numbersep=5pt,
+	gobble=0
 }
 \renewcommand{\listingscaption}{Kode Sumber}
 \renewcommand{\listoflistingscaption}{Daftar Kode Sumber}
@@ -231,6 +231,9 @@ literate = {---}{{\ProcessThreeDashes}}3
 \usepackage{amsmath}
 \usepackage{stmaryrd}
 \usepackage{mathtools}
+
+% untuk insert pdf
+\usepackage{pdfpages}
 
 % Untuk mengatur spacing daftar gambar
 \newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
