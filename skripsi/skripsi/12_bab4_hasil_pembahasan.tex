@@ -11,10 +11,10 @@ microservice untuk dilakukan simulasi implementasi pada ArgoCD. Semua rancangan 
 \subsection{Sistem Arsitektur Infrastruktur}
 Peneliti menggunakan Proxmox VE (Virtual Environment) yang didalam nya terdapat Virtual Machine berupa Talos OS Linux yang siap digunakan untuk menjalankan Kubernetes cluster
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/proxmox-cluster.png}
-    \caption{Arsitektur Infrastruktur High Level}
-    \label{fig:arsitektur_infrastruktur}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/proxmox-cluster.png}
+  \caption{Arsitektur Infrastruktur High Level}
+  \label{fig:arsitektur_infrastruktur}
 \end{figure}
 
 \subsection{Sistem Arsitektur Kubernetes Cluster}
@@ -22,10 +22,10 @@ Pada bagian sebelumnya peneliti sudah memaparkan arsitektur infrastruktur dimana
 memaparkan arsitektur pada Kubernetes cluster nya itu sendiri dimana ArgoCD akan berjalan.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/kube-new.png}
-    \caption{Arsitektur Kubernetes High Level}
-    \label{fig:arsitektur_kubernetes}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/kube-new.png}
+  \caption{Arsitektur Kubernetes High Level}
+  \label{fig:arsitektur_kubernetes}
 \end{figure}
 
 Didalam sistem Kubernetes cluster yang dibuat terdapat komponen ArgoCD dan Cloudflare Tunnel (optional) yang bertujuan agar server
@@ -35,12 +35,12 @@ microservice bisa diakses pada world wide web (internet).
 Tahap ini peneliti akan menjabarkan secara rinci pengkodean/implementasi rancangan sistem yang sudah dirancang.
 Peneliti akan melakukan implementasi rancangan sistem menggunakan beberapa komponen yaitu
 \begin{enumerate}
-    \item Proxmox VE (versi 8.4)
-    \item Talos OS (versi 1.9.5)
-    \item Kubernetes
-    \item ArgoCD
-    \item Cloudflare Tunnel
-    \item Git repository (GitHub)
+  \item Proxmox VE (versi 8.4)
+  \item Talos OS (versi 1.9.5)
+  \item Kubernetes
+  \item ArgoCD
+  \item Cloudflare Tunnel
+  \item Git repository (GitHub)
 \end{enumerate}
 
 \subsection{Implementasi Proxmox VE}
@@ -49,38 +49,38 @@ Pertama kita akan download ISO file atau installer proxmox yang terdapat di link
 Setelah itu kita memerlukan sebuah Flashdisk atau media untuk bootable ISO tersebut disini peneliti menggunakan tools yang bernama Rufus
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/proxmox-install-rufus-1.jpg}
-    \caption{Proses Pembuatan Bootable Proxmox Menggunakan Rufus}
-    \label{fig:proxmox_rufus}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/proxmox-install-rufus-1.jpg}
+  \caption{Proses Pembuatan Bootable Proxmox Menggunakan Rufus}
+  \label{fig:proxmox_rufus}
 \end{figure}
 
 Setelah itu kita perlu mengganti bootable menu yang mengarah pada flashdisk atau media yang kita gunakan untuk instalasi proxmox ketika booting BIOS pada mesin yang digunakan.
 Akan terdapat layar instalasi Rufus seperti ini yang akan muncul pada mesin yang kita gunakan.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/proxmox-install-ui-2.jpg}
-    \caption{Tampilan Awal Instalasi Proxmox VE}
-    \label{fig:proxmox_install_ui}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/proxmox-install-ui-2.jpg}
+  \caption{Tampilan Awal Instalasi Proxmox VE}
+  \label{fig:proxmox_install_ui}
 \end{figure}
 
 Selanjutnya kita tinggal mengikuti apa yang diarahkan secara default oleh user interface yang ditampilkan hingga mesin akan restart dan berada pada tampilan seperti ini.
 Pada tampilan layar tersebut terdapat server yang bisa kita gunakan untuk akses user interface melalui browser
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/proxmox-install-terminal-3.jpg}
-    \caption{Tampilan Terminal Setelah Instalasi Proxmox Selesai}
-    \label{fig:proxmox_terminal}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/proxmox-install-terminal-3.jpg}
+  \caption{Tampilan Terminal Setelah Instalasi Proxmox Selesai}
+  \label{fig:proxmox_terminal}
 \end{figure}
 
 Akses UI pada komputer yang ada pada network yang sama dengan Proxmox melalui web user interface.
 Peneliti akan mengulang implementasi ini untuk mesin kedua.
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/proxmox-install-web-ui-4.jpg}
-    \caption{Tampilan Web Interface Proxmox VE}
-    \label{fig:proxmox_webui}
+  \centering
+  \includegraphics[width=0.9\textwidth]{figures/proxmox-install-web-ui-4.jpg}
+  \caption{Tampilan Web Interface Proxmox VE}
+  \label{fig:proxmox_webui}
 \end{figure}
 
 \subsection{Implementasi Talos OS}
@@ -90,10 +90,10 @@ Pertama yang dilakukan adalah mengunduh ISO file Talos OS di sini.
 \url{https://github.com/siderolabs/talos/releases/download/v1.9.5/metal-amd64.iso}
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/talos-install-1.jpg}
-    \caption{Proses Download ISO Talos OS}
-    \label{fig:talos_download}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/talos-install-1.jpg}
+  \caption{Proses Download ISO Talos OS}
+  \label{fig:talos_download}
 \end{figure}
 
 Url tersebut lalu didownload melalui proxmox agar tersimpan didalam proxmox. Lalu tahap selanjutnya adalah melakukan instalasi VM Talos OS pada proxmox.
@@ -103,58 +103,58 @@ Tahap ini adalah bagian instalasi VM Talos OS. Peneliti melakukan instalasi pada
 Tahap ini akan dilakukan pada 2 mesin berbeda pada proxmox.
 
 \begin{figure}[!htbp]
-    1. Klik Create VM lalu isikan VM ID dan Name untuk VM Talos OS
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-2.jpg}
-    \caption{Instalasi Talos OS 1}
+  1. Klik Create VM lalu isikan VM ID dan Name untuk VM Talos OS
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-2.jpg}
+  \caption{Instalasi Talos OS 1}
 \end{figure}
 \begin{figure}[!htbp]
-    2. Pada bagian OS. Pilih ISO Talos OS yang baru saja diunduh sebelum nya
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-3.jpg}
-    \caption{Instalasi Talos OS 2}
+  2. Pada bagian OS. Pilih ISO Talos OS yang baru saja diunduh sebelum nya
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-3.jpg}
+  \caption{Instalasi Talos OS 2}
 \end{figure}
 \begin{figure}[!htbp]
-    3. Pada bagian System. cukup next
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-4.jpg}
-    \caption{Instalasi Talos OS 3}
+  3. Pada bagian System. cukup next
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-4.jpg}
+  \caption{Instalasi Talos OS 3}
 \end{figure}
 \begin{figure}[!htbp]
-    4. Pada bagian Disk. Cuku merubah bagian Disk size menjadi 100
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-5.jpg}
-    \caption{Instalasi Talos OS 4}
+  4. Pada bagian Disk. Cuku merubah bagian Disk size menjadi 100
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-5.jpg}
+  \caption{Instalasi Talos OS 4}
 \end{figure}
 \begin{figure}[!htbp]
-    5. Pada bagian CPU. Cukup merubah cores menjadi 2 atau 4 sesuai spesifikasi mesin yang diinginkan
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-6.jpg}
-    \caption{Instalasi Talos OS 5}
+  5. Pada bagian CPU. Cukup merubah cores menjadi 2 atau 4 sesuai spesifikasi mesin yang diinginkan
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-6.jpg}
+  \caption{Instalasi Talos OS 5}
 \end{figure}
 \begin{figure}[!htbp]
-    6. Pada bagian memory. Isikan memory sesuai yang dinginkan dengan minimal 8192 MiB
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-7.jpg}
-    \caption{Instalasi Talos OS 6}
+  6. Pada bagian memory. Isikan memory sesuai yang dinginkan dengan minimal 8192 MiB
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-7.jpg}
+  \caption{Instalasi Talos OS 6}
 \end{figure}
 \begin{figure}[!htbp]
-    7. Pada bagian Network. Silahkan klik next
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-8.jpg}
-    \caption{Instalasi Talos OS 7}
+  7. Pada bagian Network. Silahkan klik next
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-8.jpg}
+  \caption{Instalasi Talos OS 7}
 \end{figure}
 \begin{figure}[!htbp]
-    8. Pada bagian confirm. Centang "Start After Created" lalu Finish
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-9.jpg}
-    \caption{Instalasi Talos OS 8}
+  8. Pada bagian confirm. Centang "Start After Created" lalu Finish
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-9.jpg}
+  \caption{Instalasi Talos OS 8}
 \end{figure}
 \begin{figure}[!htbp]
-    10. Ketika Talos OS Sudah berjalan terminal Talos OS akan tampak seperti ini
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-10.jpg}
-    \caption{Instalasi Talos OS 9}
+  10. Ketika Talos OS Sudah berjalan terminal Talos OS akan tampak seperti ini
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-10.jpg}
+  \caption{Instalasi Talos OS 9}
 \end{figure}
 \newpage
 
@@ -163,7 +163,7 @@ Tahap ini adalah tahap untuk instalasi Kubernetes pada Talos OS. Disini peneliti
 Instalasi Kubernetes pada Talos OS sendiri mengikuti panduan dari pedoman yang terdapat pada website Talos OS \url{https://www.talos.dev/v1.9.5/introduction/getting-started/}
 
 \begin{table}[!htbp]
-    \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
+  \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
 version: '3'
 tasks:
   talos:
@@ -176,11 +176,11 @@ tasks:
       - until talhelper gencommand bootstrap | bash; do sleep 10; done
       - until talhelper gencommand kubeconfig --extra-flags="{{.ROOT_DIR}} --force" | bash; do sleep 10; done
 \end{lstlisting}
-    \caption{Konfigurasi script instalasi Kubernetes cluster pada Talos OS}
-    \label{tab:yaml-code}
+  \caption{Konfigurasi script instalasi Kubernetes cluster pada Talos OS}
+  \label{tab:yaml-code}
 \end{table}
 \begin{table}[!htbp]
-    \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
+  \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
 clusterName: kubernetes
 endpoint: https://192.168.0.250:6443
 ...
@@ -217,24 +217,24 @@ nodes:
             gateway: "192.168.0.1"
         mtu: 1500
 \end{lstlisting}
-    \caption{Konfigurasi script instalasi Kubernetes cluster pada Talos OS}
-    \label{tab:yaml-code-2}
+  \caption{Konfigurasi script instalasi Kubernetes cluster pada Talos OS}
+  \label{tab:yaml-code-2}
 \end{table}
 \newpage
 Setelah dilakukan instalasi Kubernetes cluster pada Talos OS tampilan terminal akan menampilkan nama cluster
 dan juga sudah tidak menampilan status Stage: Maintenance seperti Gambar 4.16.
 \begin{figure}[!ht]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/talos-install-11.jpg}
-    \caption{Tampilan Talos OS setelah instalasi kubernetes cluster}
+  \centering
+  \includegraphics[width=1\textwidth]{figures/talos-install-11.jpg}
+  \caption{Tampilan Talos OS setelah instalasi kubernetes cluster}
 \end{figure}
 \newpage
 Setelah instalasi kubernetes pada Talos OS dilakukan maka kita dapat mengakses kubernetes cluster tersebut menggunakan cli kubectl.
 Sebagai contoh saya mempunyai aplikasi yang menampilkan informasi header pada browser pada \url{echo.zeinfahrozi.my.id}
 \begin{figure}[!ht]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/echo-web.jpg}
-    \caption{Tampilan echo.zeinfahrozi.my.id pada browser}
+  \centering
+  \includegraphics[width=1\textwidth]{figures/echo-web.jpg}
+  \caption{Tampilan echo.zeinfahrozi.my.id pada browser}
 \end{figure}
 \section{Implementasi ArgoCD pada cluster kubernetes}
 Tahap ini merupakan instalasi instance ArgoCD itu sendiri pada kubernetes cluster yang sudah dibuat sebelumnya. ArgoCD dipasang menggunakan Helm chart dengan konfigurasi kustom yang disesuaikan dengan kebutuhan lingkungan produksi.
@@ -289,30 +289,30 @@ configs:
 Beberapa konfigurasi penting yang diterapkan:
 
 \begin{itemize}
-    \item ArgoCD diakses melalui domain \texttt{argo.zeinfahrozi.my.id}
-    \item Mode \texttt{insecure} diaktifkan untuk pengembangan
-    \item Fitur status badge diaktifkan untuk memantau status aplikasi
-    \item Dukungan untuk multiple value files dengan skema yang berbeda
-    \item Eksklusi sumber daya tertentu seperti CiliumIdentity dari manajemen ArgoCD
+  \item ArgoCD diakses melalui domain \texttt{argo.zeinfahrozi.my.id}
+  \item Mode \texttt{insecure} diaktifkan untuk pengembangan
+  \item Fitur status badge diaktifkan untuk memantau status aplikasi
+  \item Dukungan untuk multiple value files dengan skema yang berbeda
+  \item Eksklusi sumber daya tertentu seperti CiliumIdentity dari manajemen ArgoCD
 \end{itemize}
 
 \subsection{Konfigurasi High Availability}
 Untuk memastikan ketersediaan tinggi, komponen-komponen kritis ArgoCD dikonfigurasi dengan multiple replica:
 
 \begin{itemize}
-    \item ArgoCD Server: 2 replica
-    \item ArgoCD Controller: 2 replica
-    \item Dex Server: 2 replica
+  \item ArgoCD Server: 2 replica
+  \item ArgoCD Controller: 2 replica
+  \item Dex Server: 2 replica
 \end{itemize}
 
 \subsection{Integrasi dengan Monitoring}
 ArgoCD terintegrasi dengan stack monitoring yang sudah ada di cluster melalui ServiceMonitor untuk memantau metrik dari komponen-komponennya:
 
 \begin{itemize}
-    \item ArgoCD Server metrics
-    \item ArgoCD Controller metrics
-    \item Dex Server metrics
-    \item Redis metrics
+  \item ArgoCD Server metrics
+  \item ArgoCD Controller metrics
+  \item Dex Server metrics
+  \item Redis metrics
 \end{itemize}
 
 \subsection{Manajemen Aplikasi}
@@ -322,10 +322,10 @@ Setelah ArgoCD terinstal, aplikasi-aplikasi dapat dikelola menggunakan GitOps. S
 Beberapa aspek keamanan yang diterapkan pada instalasi ArgoCD ini antara lain:
 
 \begin{itemize}
-    \item Penggunaan HTTPS untuk akses web UI
-    \item Integrasi dengan Dex untuk autentikasi
-    \item Pembatasan akses berbasis peran (RBAC)
-    \item Penyimpanan rahasia yang aman menggunakan SOPS
+  \item Penggunaan HTTPS untuk akses web UI
+  \item Integrasi dengan Dex untuk autentikasi
+  \item Pembatasan akses berbasis peran (RBAC)
+  \item Penyimpanan rahasia yang aman menggunakan SOPS
 \end{itemize}
 
 Dengan konfigurasi ini, ArgoCD siap digunakan untuk mengelola aplikasi secara deklaratif menggunakan prinsip GitOps, di mana semua perubahan konfigurasi dilakukan melalui pull request dan version control system.
@@ -435,96 +435,96 @@ Pengujian dilakukan dengan pendekatan black-box testing yang berfokus pada fungs
 \subsection{Hasil Pengujian}\label{subsec:hasil_pengujian}
 Berikut adalah daftar test case yang telah dilakukan beserta hasilnya:
 \begin{table}[h]
-    \centering
-    \caption{Daftar Test Case Black-Box Testing}
-    \label{tab:test-case}
-    \small
-    \begin{adjustbox}{width=\textwidth}
-        \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
-            \hline
-            \textbf{Kode Uji} & \textbf{Nama Uji}         & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                     & \textbf{Status} \\
-            \hline
-            BT-001            & Login ke Dashboard ArgoCD & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Buka halaman login ArgoCD
-                                                                \item Masukkan kredensial admin
-                                                                \item Klik tombol login
-                                                            \end{enumerate} & Pengguna berhasil login dan diarahkan ke dashboard utama           & Valid                                                                          \\ \hline
-            BT-002            & Tambah Aplikasi Baru      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Klik "New App"
-                                                                \item Isi form dengan detail aplikasi
-                                                                \item Klik "Create"
-                                                            \end{enumerate} & Aplikasi baru berhasil dibuat dan muncul di daftar aplikasi        & Valid                                                                          \\ \hline
-            BT-003            & Sinkronisasi Otomatis     & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Buat perubahan pada file konfigurasi di repo Git
-                                                                \item Push perubahan ke branch yang dimonitor
-                                                            \end{enumerate} & ArgoCD mendeteksi perubahan dan melakukan sinkronisasi otomatis    & Valid                                                                          \\ \hline
-            BT-004            & Rollback Aplikasi         & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Pilih aplikasi
-                                                                \item Klik "History and Rollback"
-                                                                \item Pilih versi sebelumnya
-                                                                \item Klik "Sync"
-                                                            \end{enumerate} & Aplikasi berhasil di-rollback ke versi sebelumnya                  & Valid                                                                          \\ \hline
-            BT-005            & Validasi Status Kesehatan & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Deploy aplikasi dengan konfigurasi salah
-                                                                \item Periksa status di dashboard
-                                                            \end{enumerate} & Menampilkan status "Degraded" atau "Error" dengan pesan yang jelas & Valid                                                                          \\ \hline
-            BT-006            & Pencarian Aplikasi        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Gunakan fitur search di dashboard
-                                                                \item Masukkan nama aplikasi
-                                                            \end{enumerate} & Menampilkan aplikasi yang sesuai dengan kata kunci pencarian       & Valid                                                                          \\ \hline
-            BT-007            & Filter Aplikasi           & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                                \item Gunakan filter berdasarkan status/kategori
-                                                                \item Pilih filter tertentu
-                                                            \end{enumerate} & Menampilkan aplikasi yang sesuai dengan filter yang dipilih        & Valid                                                                          \\ \hline
-        \end{tabular}
-    \end{adjustbox}
+  \centering
+  \caption{Daftar Test Case Black-Box Testing}
+  \label{tab:test-case}
+  \small
+  \begin{adjustbox}{width=\textwidth}
+    \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
+      \hline
+      \textbf{Kode Uji} & \textbf{Nama Uji}         & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                     & \textbf{Status} \\
+      \hline
+      BT-001            & Login ke Dashboard ArgoCD & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Buka halaman login ArgoCD
+                                                        \item Masukkan kredensial admin
+                                                        \item Klik tombol login
+                                                      \end{enumerate} & Pengguna berhasil login dan diarahkan ke dashboard utama           & Valid                                                                          \\ \hline
+      BT-002            & Tambah Aplikasi Baru      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Klik "New App"
+                                                        \item Isi form dengan detail aplikasi
+                                                        \item Klik "Create"
+                                                      \end{enumerate} & Aplikasi baru berhasil dibuat dan muncul di daftar aplikasi        & Valid                                                                          \\ \hline
+      BT-003            & Sinkronisasi Otomatis     & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Buat perubahan pada file konfigurasi di repo Git
+                                                        \item Push perubahan ke branch yang dimonitor
+                                                      \end{enumerate} & ArgoCD mendeteksi perubahan dan melakukan sinkronisasi otomatis    & Valid                                                                          \\ \hline
+      BT-004            & Rollback Aplikasi         & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Pilih aplikasi
+                                                        \item Klik "History and Rollback"
+                                                        \item Pilih versi sebelumnya
+                                                        \item Klik "Sync"
+                                                      \end{enumerate} & Aplikasi berhasil di-rollback ke versi sebelumnya                  & Valid                                                                          \\ \hline
+      BT-005            & Validasi Status Kesehatan & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Deploy aplikasi dengan konfigurasi salah
+                                                        \item Periksa status di dashboard
+                                                      \end{enumerate} & Menampilkan status "Degraded" atau "Error" dengan pesan yang jelas & Valid                                                                          \\ \hline
+      BT-006            & Pencarian Aplikasi        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Gunakan fitur search di dashboard
+                                                        \item Masukkan nama aplikasi
+                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan kata kunci pencarian       & Valid                                                                          \\ \hline
+      BT-007            & Filter Aplikasi           & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                        \item Gunakan filter berdasarkan status/kategori
+                                                        \item Pilih filter tertentu
+                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan filter yang dipilih        & Valid                                                                          \\ \hline
+    \end{tabular}
+  \end{adjustbox}
 \end{table}
 
 \newpage
 \clearpage
 \begin{table}[H]
-    \centering
-    \caption{Daftar Test Case Black-Box Testing (Lanjutan)}
-    \label{tab:test-case-2}
-    \small
-    \begin{adjustbox}{width=\textwidth}
-        \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
-            \hline
-            \textbf{Kode Uji} & \textbf{Nama Uji}       & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                      & \textbf{Status} \\
-            \hline
-            BT-008            & Manajemen Kluster       & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Tambah kluster baru
-                                                              \item Verifikasi koneksi
-                                                          \end{enumerate} & Kluster baru terdaftar dan terhubung dengan status "Healthy"        & Valid                                                                          \\ \hline
-            BT-009            & Logout                  & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Klik profil pengguna
-                                                              \item Pilih "Logout"
-                                                          \end{enumerate} & Pengguna berhasil logout dan diarahkan ke halaman login             & Valid                                                                          \\ \hline
-            BT-010            & Responsivitas UI        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Akses dashboard dari berbagai perangkat (desktop, tablet, mobile)
-                                                          \end{enumerate} & Tampilan UI menyesuaikan dengan ukuran layar                        & Valid                                                                          \\ \hline
-            BT-011            & Notifikasi Sinkronisasi & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Lakukan sinkronisasi manual
-                                                              \item Periksa notifikasi
-                                                          \end{enumerate} & Muncul notifikasi yang menampilkan status sinkronisasi              & Valid                                                                          \\ \hline
-            BT-012            & Error Handling          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Masukkan URL repo Git yang tidak valid
-                                                              \item Coba buat aplikasi
-                                                          \end{enumerate} & Menampilkan pesan error yang jelas tentang URL yang tidak valid     & Valid                                                                          \\ \hline
-            BT-013            & Ekspor Konfigurasi      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Pilih aplikasi
-                                                              \item Ekspor konfigurasi
-                                                          \end{enumerate} & File konfigurasi berhasil diunduh dalam format YAML                 & Valid                                                                          \\ \hline
-            BT-014            & Manajemen Izin          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Buat pengguna dengan role terbatas
-                                                              \item Verifikasi akses
-                                                          \end{enumerate} & Pengguna hanya dapat mengakses fitur sesuai role yang diberikan     & Valid                                                                          \\ \hline
-            BT-015            & Audit Log               & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
-                                                              \item Lakukan beberapa aksi di dashboard
-                                                              \item Periksa halaman audit log
-                                                          \end{enumerate} & Semua aksi terekam dalam log dengan timestamp dan detail yang jelas & Valid                                                                          \\ \hline
-        \end{tabular}
-    \end{adjustbox}
+  \centering
+  \caption{Daftar Test Case Black-Box Testing (Lanjutan)}
+  \label{tab:test-case-2}
+  \small
+  \begin{adjustbox}{width=\textwidth}
+    \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
+      \hline
+      \textbf{Kode Uji} & \textbf{Nama Uji}       & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                      & \textbf{Status} \\
+      \hline
+      BT-008            & Manajemen Kluster       & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Tambah kluster baru
+                                                      \item Verifikasi koneksi
+                                                    \end{enumerate} & Kluster baru terdaftar dan terhubung dengan status "Healthy"        & Valid                                                                          \\ \hline
+      BT-009            & Logout                  & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Klik profil pengguna
+                                                      \item Pilih "Logout"
+                                                    \end{enumerate} & Pengguna berhasil logout dan diarahkan ke halaman login             & Valid                                                                          \\ \hline
+      BT-010            & Responsivitas UI        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Akses dashboard dari berbagai perangkat (desktop, tablet, mobile)
+                                                    \end{enumerate} & Tampilan UI menyesuaikan dengan ukuran layar                        & Valid                                                                          \\ \hline
+      BT-011            & Notifikasi Sinkronisasi & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Lakukan sinkronisasi manual
+                                                      \item Periksa notifikasi
+                                                    \end{enumerate} & Muncul notifikasi yang menampilkan status sinkronisasi              & Valid                                                                          \\ \hline
+      BT-012            & Error Handling          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Masukkan URL repo Git yang tidak valid
+                                                      \item Coba buat aplikasi
+                                                    \end{enumerate} & Menampilkan pesan error yang jelas tentang URL yang tidak valid     & Valid                                                                          \\ \hline
+      BT-013            & Ekspor Konfigurasi      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Pilih aplikasi
+                                                      \item Ekspor konfigurasi
+                                                    \end{enumerate} & File konfigurasi berhasil diunduh dalam format YAML                 & Valid                                                                          \\ \hline
+      BT-014            & Manajemen Izin          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Buat pengguna dengan role terbatas
+                                                      \item Verifikasi akses
+                                                    \end{enumerate} & Pengguna hanya dapat mengakses fitur sesuai role yang diberikan     & Valid                                                                          \\ \hline
+      BT-015            & Audit Log               & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
+                                                      \item Lakukan beberapa aksi di dashboard
+                                                      \item Periksa halaman audit log
+                                                    \end{enumerate} & Semua aksi terekam dalam log dengan timestamp dan detail yang jelas & Valid                                                                          \\ \hline
+    \end{tabular}
+  \end{adjustbox}
 \end{table}
 
 \subsection{Analisis Hasil Pengujian}\label{subsec:analisis_hasil}
@@ -545,8 +545,26 @@ Meskipun semua test case berhasil, terdapat beberapa aspek yang memerlukan perha
 \subsubsection{Rekomendasi}
 Berdasarkan hasil pengujian, berikut beberapa rekomendasi untuk pengembangan selanjutnya:
 \begin{enumerate}
-    \item Implementasi mekanisme backup dan recovery yang lebih komprehensif
-    \item Peningkatan pengujian keamanan dan penetrasi
-    \item Pengembangan pipeline CI/CD yang lebih matang
-    \item Implementasi monitoring dan alerting yang lebih baik
+  \item Implementasi mekanisme backup dan recovery yang lebih komprehensif
+  \item Peningkatan pengujian keamanan dan penetrasi
+  \item Pengembangan pipeline CI/CD yang lebih matang
+  \item Implementasi monitoring dan alerting yang lebih baik
 \end{enumerate}
+
+
+
+% * Revisi Rumusan hasil rumusan di bab 4
+% * Revisi terkait penulisan implementasi yang ada di github masukan di skripsi
+% * Penjelasan terkait hasil implementasi service pada bab 4 (color, frontend, auth)
+
+% * Tambahkan testing pada sisi service seperti (jaringan, waktu (speed))
+% * gambar dan tabel dirujuk semua lalu diberikan border
+% * dalam subbab perlu a,b,c bukan 1,2,3 (contoh di halaman 13)
+% * gambar dijelaskan why nya
+% * bab 2 tolong ditambahkan literatur nya dan ditampilkan penelitian terdahulu
+
+
+% format penulisan
+% * Penulisan sub bab harus melihat penjelasan dan kalimat yang diutarakan
+% * perlu diperbaiki secara serius dalam uji microservice
+% * uji fungsionalitas terhadap microservice pada bab 4

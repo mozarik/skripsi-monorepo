@@ -238,17 +238,26 @@ literate = {---}{{\ProcessThreeDashes}}3
 % background watermark
 \usepackage{everypage}
 \usepackage{tikz}
+\usepackage{etoolbox}
 
 % Define the watermark command
 \newcommand\AddWatermark{
-    \begin{tikzpicture}[remember picture,overlay]
-        \node[opacity=0.2,inner sep=0pt] at (current page.center) 
-            {\includegraphics[width=0.7\paperwidth,keepaspectratio]{figures/watermark-logo-umm.jpg}};
-    \end{tikzpicture}%
+    \ifshowwatermark
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[opacity=0.2,inner sep=0pt] at (current page.center) 
+                {\includegraphics[width=0.7\paperwidth,keepaspectratio]{figures/watermark-logo-umm.jpg}};
+        \end{tikzpicture}%
+    \fi
 }
 
 % Add watermark to every page by default
 \AddEverypageHook{\AddWatermark}
+
+% Commands to control watermark
+\newif\ifshowwatermark
+\showwatermarktrue
+\newcommand{\showwatermark}{\showwatermarktrue}
+\newcommand{\hidewatermark}{\showwatermarkfalse}
 
 % Untuk mengatur spacing daftar gambar
 \newcommand*{\noaddvspace}{\renewcommand*{\addvspace}[1]{}}
