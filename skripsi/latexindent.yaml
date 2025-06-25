@@ -1,0 +1,11 @@
+defaultIndent: '  '
+modifyLineBreaks:
+  textWrapOptions:
+    columns: 80
+  mandatoryArguments:
+    textbf:
+      textWrapOptions:
+        columns: 80
+    textit:
+      textWrapOptions:
+        columns: 80

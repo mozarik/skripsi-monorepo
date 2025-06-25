@@ -5,162 +5,264 @@
 \vspace{4.5pt}
 \setlength{\parskip}{0.5em}
 \section{Perancangan (Design)}\label{sec:bab4_perancangan}
-Pada tahan pertama ini peneliti akan melakukan perancangan sebuah infrastruktur dimana sistem Kubernetes dan ArgoCD akan dijalankan lalu
-microservice untuk dilakukan simulasi implementasi pada ArgoCD. Semua rancangan akan menggunakan visualisasi diagram secara garis besar (high-level) agar mudah dipahami.
+Pada tahan pertama ini peneliti akan melakukan perancangan sebuah infrastruktur
+dimana sistem Kubernetes dan ArgoCD akan dijalankan lalu microservice untuk
+dilakukan simulasi implementasi pada ArgoCD. Semua rancangan akan menggunakan
+visualisasi diagram secara garis besar (high-level) agar mudah dipahami.
 
-\subsection{Sistem Arsitektur Infrastruktur}
-Peneliti menggunakan Proxmox VE (Virtual Environment) yang didalam nya terdapat Virtual Machine berupa Talos OS Linux yang siap digunakan untuk menjalankan Kubernetes cluster
+\subsection{Perancangan Sistem Arsitektur Infrastruktur Mesin}
+Sebelum dilakukan penelitian lebih lanjut pada implementasi ArgoCD pada
+Kubernetes Cluster perlu dirancang terlebih dahulu arsitektur infrastruktur
+mesin yang akan menjadi tempat instlasi Kubernetes Cluster. Peneliti
+menggunakan Proxmox VE (Virtual Environment) yang didalam nya terdapat Virtual
+Machine berupa Talos OS Linux yang siap dilakukan instalasi Kubernetes Cluster.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\textwidth]{figures/proxmox-cluster.png}
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/proxmox-cluster-design-1.png}}
   \caption{Arsitektur Infrastruktur High Level}
-  \label{fig:arsitektur_infrastruktur}
+  \label{fig:arsitektur_infrastruktur_mesin}
 \end{figure}
-
-\subsection{Sistem Arsitektur Kubernetes Cluster}
-Pada bagian sebelumnya peneliti sudah memaparkan arsitektur infrastruktur dimana Kubernetes cluster akan berjalan. Pada tahap ini peneliti akan
-memaparkan arsitektur pada Kubernetes cluster nya itu sendiri dimana ArgoCD akan berjalan.
-
+Pada \textbf{Gambar \ref{fig:arsitektur_infrastruktur_mesin}} menunjukan
+arsitektur infrastruktur mesin secara high level dimana terdapat 2 cluster
+proxmox yang di \textit{joined} agar bisa saling terhubung satu sama lain.
+Akses terhadap proxmox tersebut dapat dilakukan menggunakan port 8006 dengan
+menggunakan browser atau dengan kata lain bisa diakses dari
+https://192.168.0.194:8006/ atau https://192.168.0.195:8006/
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\textwidth]{figures/kube-new.png}
-  \caption{Arsitektur Kubernetes High Level}
-  \label{fig:arsitektur_kubernetes}
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/proxmox-cluster.png}}
+  \caption{Arsitektur Virtual Machine Talos OS pada Proxmox Cluster}
+  \label{fig:arsitektur_virtual_machine_talos_os}
 \end{figure}
 
-Didalam sistem Kubernetes cluster yang dibuat terdapat komponen ArgoCD dan Cloudflare Tunnel (optional) yang bertujuan agar server
-microservice bisa diakses pada world wide web (internet).
+Setelah dilakukan \textit{provisioning} pada proxmox tersebut akan dilakukan
+instalasi Talos OS pada node tersebut menggunakan dengan memanfaatkan
+\textit{virtual machine} yang ada pada proxmox. Pada \textbf{Gambar
+  \ref{fig:arsitektur_virtual_machine_talos_os}} merupakan arsitektur pada
+kubernetes cluster itu sendiri dimana sistem virtual machine yang didalamnya
+terdapat komponen Talos OS dan komponen kubernetes. Kubernetes Cluster dapat
+diakses menggunakan address 192.168.0.253:6443 menggunakan kubectl didalam
+address tersebut terdapat 2 node Talos OS yang masing-masing memiliki komponen
+kubernetes node.
 
-\section{Pengkodean (Coding) / Implementasi}
-Tahap ini peneliti akan menjabarkan secara rinci pengkodean/implementasi rancangan sistem yang sudah dirancang.
-Peneliti akan melakukan implementasi rancangan sistem menggunakan beberapa komponen yaitu
-\begin{enumerate}
-  \item Proxmox VE (versi 8.4)
-  \item Talos OS (versi 1.9.5)
-  \item Kubernetes
-  \item ArgoCD
-  \item Cloudflare Tunnel
-  \item Git repository (GitHub)
-\end{enumerate}
+\subsection{Perancangan Arsitektur ArgoCD pada Kubernetes Cluster}
+Pada bagian sebelumnya peneliti sudah memaparkan arsitektur infrastruktur mesin
+dimana Kubernetes cluster akan berjalan. Pada tahap ini peneliti akan
+memaparkan arsitektur pada kubernetes cluster nya itu sendiri dimana ArgoCD
+akan berjalan.
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/kubernetes-cluster-1-new.png}}
+  \caption{Arsitektur Kubernetes High Level}
+  \label{fig:arsitektur_kubernetes_inside_proxmox}
+\end{figure}
 
-\subsection{Implementasi Proxmox VE}
-Untuk implementasi Proxmox VE sendiri peneliti melakukan instalasi proxmox pada 2 mesin dengan arsitektur CPU X86.
-Pertama kita akan download ISO file atau installer proxmox yang terdapat di link ini \verb|https://enterprise.proxmox.com/iso/proxmox-ve_8.4-1.iso|.
-Setelah itu kita memerlukan sebuah Flashdisk atau media untuk bootable ISO tersebut disini peneliti menggunakan tools yang bernama Rufus
+Pada \textbf{Gambar \ref{fig:arsitektur_kubernetes_inside_proxmox}}
+mengambarkan arsitektur kubernetes nya secara high level dimana terdapat
+komponen ArgoCD dan Cloudflare Tunnel yang bertujuan agar server microservice
+bisa diakses pada world wide web (internet). Secara garis besar sebuah service
+digambarkan sebagai app yang terdeploy pada sebuah namespace yang terdapat pada
+kubernetes cluster. Lalu \textit{ingress} akan digunakan untuk mengakses
+service tersebut dari luar cluster dengan menggunakan domain yang sudah
+terdaftar pada cloudflare.
 
+\subsection{Perancangan Arsitektur Microservice pada Kubernetes Cluster}
+Pada bagian ini peneliti akan memaparkan contoh design arsitektur microservice
+yang akan dijadikan acuan untuk dilakukan implementasi pada kubernetes cluster.
+Nantinya service service ini akan berdiri sendiri dan mempunya deployment
+sendiri pada kubernetes cluster. Deployment service tersebut akan dideploy
+menggunakan ArgoCD agar bisa terdeploy kedalam kubernetes cluster.
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/microservice-arsitektur.drawio.png}}
+  \caption{Arsitektur Microservice High Level}
+  \label{fig:arsitektur_microservice_high_level}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:arsitektur_microservice_high_level}} menggambarkan
+arsitektur microservice yang akan dideploy pada kubernetes cluster menggunakan
+Argo CD. Microservice tersebut terdiri dari beberapa service yaitu service
+frontend yang akan berfungsi sebagai interface untuk user dan service backend
+yang akan diakses. Terdapat juga service auth yang akan berfungsi sebagai
+autentikasi dan otorisasi user sebelum bisa mengakses service backend yaitu
+color service dan prime generator service. Auth service sendiri bersifat
+stateless komponen auth db pada arsitektur digambarkan untuk menyimpan data
+user yang akan diakses oleh service auth. Color service dan prime generator
+service sendiri juga bersifat stateless untuk mempermudah implementasi
+microservice tersebut.
+
+\section{Pengkodean (Coding) / Implementasi}\label{sec:bab4_implementasi}
+Tahap ini peneliti akan menjabarkan secara rinci pengkodean/implementasi
+rancangan sistem yang sudah dirancang sebelumnya pada bagian
+\textbf{\ref{sec:bab4_perancangan} Perancangan (Design)}. Tahap implementasi
+akan dijelaskan secara berurutan sesuai dengan urutan yang dijabarkan
+sebelumnya pada bagian \textbf{\ref{sec:bab4_perancangan} Perancangan
+  (Design)}.
+
+\subsection{Implementasi Sistem Infrastruktur Mesin}
+Untuk implementasi infrastruktur mesin. Peneliti akan melakukan instalasi
+proxmox pada 2 mesin dengan arsitektur CPU X86. \textbf{Tabel
+  \ref{tab:node-kubernetes}} merupakan spesifikasi node yang akan digunakan pada
+penelitian ini.
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|l|l|c|c|c|}
+    \hline
+    \textbf{Node} & \textbf{Host} & \textbf{OS}    & \textbf{CPU (Core)} & \textbf{RAM} & \textbf{Kubernetes Version} \\
+    \hline
+    master-1      & 192.168.0.194 & Talos OS 1.9.5 & 4                   & 12 GB        & v1.28.0                     \\
+    \hline
+    worker-1      & 192.168.0.195 & Talos OS 1.9.5 & 4                   & 12 GB        & v1.28.0                     \\
+    \hline
+  \end{tabular}
+  \caption{Spesifikasi Node Kubernetes}
+  \label{tab:node-kubernetes}
+\end{table}
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{figures/proxmox-install-rufus-1.jpg}
-  \caption{Proses Pembuatan Bootable Proxmox Menggunakan Rufus}
+  \caption{Pembuatan Bootable Proxmox Menggunakan Rufus}
   \label{fig:proxmox_rufus}
 \end{figure}
-
-Setelah itu kita perlu mengganti bootable menu yang mengarah pada flashdisk atau media yang kita gunakan untuk instalasi proxmox ketika booting BIOS pada mesin yang digunakan.
-Akan terdapat layar instalasi Rufus seperti ini yang akan muncul pada mesin yang kita gunakan.
+Pertama peneliti akan download ISO file atau installer proxmox yang terdapat di
+link ini \verb|https://enterprise.proxmox.com/iso/proxmox-ve_8.4-1.iso|. Setelah
+itu peneliti memerlukan sebuah Flashdisk atau media untuk bootable ISO
+tersebut disini peneliti menggunakan tools yang bernama Rufus seperti pada \textbf{Gambar \ref{fig:proxmox_rufus}}. Setelah itu kita perlu mengganti bootable menu yang mengarah pada flashdisk
+atau media yang kita gunakan untuk instalasi proxmox ketika booting BIOS pada
+mesin yang digunakan. Setelah itu mesin akan restart dan akan masuk pada tampilan
+seperti pada \textbf{Gambar \ref{fig:proxmox_install_ui}}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/proxmox-install-ui-2.jpg}
+  \fcolorbox{black}{white}{\includegraphics[width=0.8\textwidth]{figures/proxmox-install-ui-2.jpg}}
   \caption{Tampilan Awal Instalasi Proxmox VE}
   \label{fig:proxmox_install_ui}
 \end{figure}
 
-Selanjutnya kita tinggal mengikuti apa yang diarahkan secara default oleh user interface yang ditampilkan hingga mesin akan restart dan berada pada tampilan seperti ini.
-Pada tampilan layar tersebut terdapat server yang bisa kita gunakan untuk akses user interface melalui browser
+Selanjutnya kita tinggal mengikuti apa yang diarahkan secara default oleh user
+interface yang ditampilkan hingga mesin akan restart dan berada pada tampilan
+seperti pada \textbf{Gambar \ref{fig:proxmox_terminal}}. Pada tampilan layar
+tersebut terdapat alamat server yang bisa kita gunakan untuk akses user
+interface melalui browser.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/proxmox-install-terminal-3.jpg}
+  \fcolorbox{black}{white}{\includegraphics[width=0.8\textwidth]{figures/proxmox-install-terminal-3.jpg}}
   \caption{Tampilan Terminal Setelah Instalasi Proxmox Selesai}
   \label{fig:proxmox_terminal}
 \end{figure}
 
-Akses UI pada komputer yang ada pada network yang sama dengan Proxmox melalui web user interface.
-Peneliti akan mengulang implementasi ini untuk mesin kedua.
+Akses UI pada komputer yang ada pada network yang sama dengan Proxmox melalui
+web alamat server yang terlihat pada gambar \textbf{Gambar
+  \ref{fig:proxmox_terminal}} maka akan muncul tampilan seperti pada
+\textbf{Gambar \ref{fig:proxmox_webui}}. Peneliti akan mengulang implementasi
+ini untuk mesin kedua dengan step yang sama seperti pada mesin pertama.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.9\textwidth]{figures/proxmox-install-web-ui-4.jpg}
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/proxmox-install-web-ui-4.jpg}}
   \caption{Tampilan Web Interface Proxmox VE}
   \label{fig:proxmox_webui}
 \end{figure}
 
-\subsection{Implementasi Talos OS}
-Pada tahap selanjutnya akan dilakukan instalasi Talos OS yang akan di-install menggunakan VM yang ada pada Proxmox VE.
-Pertama yang dilakukan adalah mengunduh ISO file Talos OS di sini.
+Pada tahap selanjutnya akan dilakukan instalasi Talos OS yang akan di-install
+menggunakan VM yang ada pada Proxmox VE. Pertama yang dilakukan adalah
+mengunduh ISO file Talos OS di sini.
 
 \url{https://github.com/siderolabs/talos/releases/download/v1.9.5/metal-amd64.iso}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/talos-install-1.jpg}
+  \fcolorbox{black}{white}{\includegraphics[width=0.8\textwidth]{figures/talos-install-1.jpg}}
   \caption{Proses Download ISO Talos OS}
   \label{fig:talos_download}
 \end{figure}
 
-Url tersebut lalu didownload melalui proxmox agar tersimpan didalam proxmox. Lalu tahap selanjutnya adalah melakukan instalasi VM Talos OS pada proxmox.
-
-\subsubsection{Instalasi Talos OS}
-Tahap ini adalah bagian instalasi VM Talos OS. Peneliti melakukan instalasi pada proxmox VE melalui interface web.
-Tahap ini akan dilakukan pada 2 mesin berbeda pada proxmox.
+Url tersebut lalu didownload melalui proxmox agar tersimpan didalam proxmox
+seperti pada \textbf{Gambar \ref{fig:talos_download}}. Lalu tahap selanjutnya
+adalah melakukan instalasi VM Talos OS pada proxmox. Tahap ini adalah bagian
+instalasi VM Talos OS. Peneliti melakukan instalasi pada proxmox VE melalui
+interface web. Tahap ini akan dilakukan pada 2 mesin berbeda pada proxmox.
+Tahap-tahap instalasi Talos OS tersebut dijabarkan secara berurutan yang
+ditunjukkan pada \textbf{Gambar \ref{fig:talos_install_1} -
+  \ref{fig:talos_install_9}}
 
 \begin{figure}[!htbp]
   1. Klik Create VM lalu isikan VM ID dan Name untuk VM Talos OS
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-2.jpg}
   \caption{Instalasi Talos OS 1}
+  \label{fig:talos_install_1}
 \end{figure}
 \begin{figure}[!htbp]
   2. Pada bagian OS. Pilih ISO Talos OS yang baru saja diunduh sebelum nya
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-3.jpg}
   \caption{Instalasi Talos OS 2}
+  \label{fig:talos_install_2}
 \end{figure}
 \begin{figure}[!htbp]
   3. Pada bagian System. cukup next
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-4.jpg}
   \caption{Instalasi Talos OS 3}
+  \label{fig:talos_install_3}
 \end{figure}
 \begin{figure}[!htbp]
   4. Pada bagian Disk. Cuku merubah bagian Disk size menjadi 100
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-5.jpg}
   \caption{Instalasi Talos OS 4}
+  \label{fig:talos_install_4}
 \end{figure}
 \begin{figure}[!htbp]
   5. Pada bagian CPU. Cukup merubah cores menjadi 2 atau 4 sesuai spesifikasi mesin yang diinginkan
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-6.jpg}
   \caption{Instalasi Talos OS 5}
+  \label{fig:talos_install_5}
 \end{figure}
 \begin{figure}[!htbp]
   6. Pada bagian memory. Isikan memory sesuai yang dinginkan dengan minimal 8192 MiB
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-7.jpg}
   \caption{Instalasi Talos OS 6}
+  \label{fig:talos_install_6}
 \end{figure}
 \begin{figure}[!htbp]
   7. Pada bagian Network. Silahkan klik next
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-8.jpg}
   \caption{Instalasi Talos OS 7}
+  \label{fig:talos_install_7}
 \end{figure}
 \begin{figure}[!htbp]
   8. Pada bagian confirm. Centang "Start After Created" lalu Finish
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-9.jpg}
   \caption{Instalasi Talos OS 8}
+  \label{fig:talos_install_8}
 \end{figure}
 \begin{figure}[!htbp]
   10. Ketika Talos OS Sudah berjalan terminal Talos OS akan tampak seperti ini
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-10.jpg}
   \caption{Instalasi Talos OS 9}
+  \label{fig:talos_install_9}
 \end{figure}
 \newpage
-
-\subsection{Pengkodean Instalasi Kubernetes Script}
-Tahap ini adalah tahap untuk instalasi Kubernetes pada Talos OS. Disini peneliti akan menggunakan deklaratif yaml yang akan mengautomatisasi instalasi kubernetes pada Talos OS.
-Instalasi Kubernetes pada Talos OS sendiri mengikuti panduan dari pedoman yang terdapat pada website Talos OS \url{https://www.talos.dev/v1.9.5/introduction/getting-started/}
+\subsubsection{Implementasi Instalasi Kubernetes pada Talos OS}
+Tahap ini adalah tahap untuk instalasi Kubernetes pada Talos OS. Disini
+peneliti akan menggunakan deklaratif yaml yang akan mengautomatisasi instalasi
+kubernetes pada Talos OS. Instalasi Kubernetes pada Talos OS sendiri mengikuti
+panduan dari pedoman yang terdapat pada website Talos OS
+\url{https://www.talos.dev/v1.9.5/introduction/getting-started/}. \textbf{Tabel
+  \ref{tab:yaml-code}} menunjukkan konfigurasi script instalasi Kubernetes
+cluster pada Talos OS terdapat beberapa langkah yang akan dijalankan yaitu
+dengan melakukan generate secret, generate config, generate command apply,
+generate command bootstrap, dan generate command kubeconfig yang akan digunakan
+sebagai konfigurasi dasar untuk instalasi Kubernetes cluster pada Talos OS
+hasil dari generate config tersebut ditunjukan pada \textbf{Tabel
+  \ref{tab:yaml-code-2}}.
 
 \begin{table}[!htbp]
   \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
@@ -221,27 +323,44 @@ nodes:
   \label{tab:yaml-code-2}
 \end{table}
 \newpage
-Setelah dilakukan instalasi Kubernetes cluster pada Talos OS tampilan terminal akan menampilkan nama cluster
-dan juga sudah tidak menampilan status Stage: Maintenance seperti Gambar 4.16.
+
+Setelah dilakukan instalasi Kubernetes cluster pada Talos OS tampilan terminal
+akan menampilkan nama cluster dan juga sudah tidak menampilan status Stage:
+Maintenance melainkan sudah menampilkan Kubelet: Healthy seperti \textbf{Gambar
+  \ref{fig:talos_install_11}}.
+
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=1\textwidth]{figures/talos-install-11.jpg}
   \caption{Tampilan Talos OS setelah instalasi kubernetes cluster}
+  \label{fig:talos_install_11}
 \end{figure}
+
 \newpage
-Setelah instalasi kubernetes pada Talos OS dilakukan maka kita dapat mengakses kubernetes cluster tersebut menggunakan cli kubectl.
-Sebagai contoh saya mempunyai aplikasi yang menampilkan informasi header pada browser pada \url{echo.zeinfahrozi.my.id}
+
+Setelah instalasi kubernetes pada Talos OS dilakukan maka kita dapat mengakses
+kubernetes cluster tersebut menggunakan cli kubectl. Sebagai contoh
+\textbf{Gambar \ref{fig:echo_web}} adalah aplikasi dummy yang menampilkan
+informasi header pada browser pada \url{echo.zeinfahrozi.my.id}.
+
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=1\textwidth]{figures/echo-web.jpg}
   \caption{Tampilan echo.zeinfahrozi.my.id pada browser}
+  \label{fig:echo_web}
 \end{figure}
-\section{Implementasi ArgoCD pada cluster kubernetes}
-Tahap ini merupakan instalasi instance ArgoCD itu sendiri pada kubernetes cluster yang sudah dibuat sebelumnya. ArgoCD dipasang menggunakan Helm chart dengan konfigurasi kustom yang disesuaikan dengan kebutuhan lingkungan produksi.
 
-Berikut adalah contoh perintah untuk menginstal ArgoCD menggunakan Helm:
+\subsection{Implementasi ArgoCD pada Kubernetes Cluster}
+Tahap ini merupakan instalasi instance ArgoCD itu sendiri pada kubernetes
+cluster yang sudah dibuat sebelumnya. ArgoCD dipasang menggunakan Helm chart
+dengan konfigurasi kustom yang disesuaikan dengan kebutuhan lingkungan
+produksi. Berikut adalah contoh perintah untuk menginstal ArgoCD menggunakan
+Helm:
 
-\begin{lstlisting}[language=bash, basicstyle=\footnotesize\ttfamily]
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=bash, basicstyle=\footnotesize\ttfamily]
 # Menambahkan repo ArgoCD
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
@@ -254,12 +373,27 @@ helm upgrade --install argocd argo/argo-cd \
   --namespace argocd \
   --values values.sops.yaml \
   --wait
-\end{lstlisting}
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Perintah Instalasi ArgoCD menggunakan Helm}
+  \label{tab:install-argocd}
+\end{table}
+Pada \textbf{Table \ref{tab:install-argocd}} menunjukkan perintah instalasi
+ArgoCD menggunakan Helm charts dengan nilai-nilai kustom yang didefinisikan
+dalam file \texttt{values.sops.yaml} yang ada pada \textbf{Table \ref{tab:values-sops-yaml}}. Beberapa konfigurasi penting yang diterapkan:
 
-\subsection{Instalasi ArgoCD}
-ArgoCD diinstal menggunakan Helm dengan nilai-nilai kustom yang didefinisikan dalam file konfigurasi. Berikut adalah contoh konfigurasi \texttt{values.sops.yaml} yang digunakan:
+\begin{enumerate}[label=\alph*.]
+  \item ArgoCD diakses melalui domain \texttt{argo.zeinfahrozi.my.id}
+  \item Mode \texttt{insecure} diaktifkan untuk pengembangan
+  \item Fitur status badge diaktifkan untuk memantau status aplikasi
+  \item Dukungan untuk multiple value files dengan skema yang berbeda
+  \item Eksklusi sumber daya tertentu seperti CiliumIdentity dari manajemen ArgoCD
+\end{enumerate}
 
-\begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
 # values.sops.yaml
 crds:
   install: true
@@ -284,153 +418,451 @@ configs:
           - CiliumIdentity
         clusters:
           - "*"
-\end{lstlisting}
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Contoh konfigurasi \texttt{values.sops.yaml} untuk ArgoCD}
+  \label{tab:values-sops-yaml}
+\end{table}
 
-Beberapa konfigurasi penting yang diterapkan:
+Setelah ArgoCD terinstal, aplikasi-aplikasi dapat dikelola menggunakan GitOps.
+Setiap aplikasi didefinisikan sebagai kustom resource Kubernetes yang
+mereferensikan repositori Git yang berisi manifest Kubernetes. ArgoCD akan
+secara otomatis melakukan sinkronisasi antara status yang diinginkan (yang
+didefinisikan di Git) dengan status aktual di cluster. Beberapa aspek keamanan
+yang diterapkan pada instalasi ArgoCD ini antara lain:
 
-\begin{itemize}
-  \item ArgoCD diakses melalui domain \texttt{argo.zeinfahrozi.my.id}
-  \item Mode \texttt{insecure} diaktifkan untuk pengembangan
-  \item Fitur status badge diaktifkan untuk memantau status aplikasi
-  \item Dukungan untuk multiple value files dengan skema yang berbeda
-  \item Eksklusi sumber daya tertentu seperti CiliumIdentity dari manajemen ArgoCD
-\end{itemize}
-
-\subsection{Konfigurasi High Availability}
-Untuk memastikan ketersediaan tinggi, komponen-komponen kritis ArgoCD dikonfigurasi dengan multiple replica:
-
-\begin{itemize}
-  \item ArgoCD Server: 2 replica
-  \item ArgoCD Controller: 2 replica
-  \item Dex Server: 2 replica
-\end{itemize}
-
-\subsection{Integrasi dengan Monitoring}
-ArgoCD terintegrasi dengan stack monitoring yang sudah ada di cluster melalui ServiceMonitor untuk memantau metrik dari komponen-komponennya:
-
-\begin{itemize}
-  \item ArgoCD Server metrics
-  \item ArgoCD Controller metrics
-  \item Dex Server metrics
-  \item Redis metrics
-\end{itemize}
-
-\subsection{Manajemen Aplikasi}
-Setelah ArgoCD terinstal, aplikasi-aplikasi dapat dikelola menggunakan GitOps. Setiap aplikasi didefinisikan sebagai kustom resource Kubernetes yang mereferensikan repositori Git yang berisi manifest Kubernetes. ArgoCD akan secara otomatis melakukan sinkronisasi antara status yang diinginkan (yang didefinisikan di Git) dengan status aktual di cluster.
-
-\subsection{Keamanan}
-Beberapa aspek keamanan yang diterapkan pada instalasi ArgoCD ini antara lain:
-
-\begin{itemize}
+\begin{enumerate}[label=\alph*.]
   \item Penggunaan HTTPS untuk akses web UI
   \item Integrasi dengan Dex untuk autentikasi
   \item Pembatasan akses berbasis peran (RBAC)
   \item Penyimpanan rahasia yang aman menggunakan SOPS
+\end{enumerate}
+
+Dengan konfigurasi ini, ArgoCD siap digunakan untuk mengelola aplikasi secara
+deklaratif menggunakan prinsip GitOps, di mana semua perubahan konfigurasi
+dilakukan melalui pull request dan version control system.
+
+\subsubsection{Implementasi Cloudflare Tunnel}
+Cloudflare Tunnel digunakan untuk mengekspos layanan dalam cluster ke internet
+dengan aman tanpa perlu membuka port firewall. Berikut adalah langkah-langkah
+implementasinya:
+
+Sebelum memulai implementasi, pastikan beberapa hal berikut sudah disiapkan:
+\begin{itemize}
+  \item Memiliki akun Cloudflare
+  \item Mendaftarkan domain yang akan digunakan
+  \item Mengatur DNS di Cloudflare
 \end{itemize}
 
-Dengan konfigurasi ini, ArgoCD siap digunakan untuk mengelola aplikasi secara deklaratif menggunakan prinsip GitOps, di mana semua perubahan konfigurasi dilakukan melalui pull request dan version control system.
+Cloudflare Tunnel diinstal menggunakan ArgoCD dengan konfigurasi seperti yang
+ditunjukkan pada \textbf{Tabel \ref{tab:cloudflared-argocd}}. Beberapa
+konfigurasi penting dalam tabel tersebut antara lain:
 
-\section{Implementasi Cloudflare Tunnel}
-Cloudflare Tunnel digunakan untuk mengekspos layanan dalam cluster ke internet dengan aman tanpa perlu membuka port firewall. Berikut adalah langkah-langkah implementasinya:
+\begin{itemize}
+  \item \texttt{apiVersion} dan \texttt{kind}: Menentukan jenis resource Kubernetes yang akan dibuat, dalam hal ini adalah ArgoCD Application
+  \item \texttt{metadata.name} dan \texttt{metadata.namespace}: Menentukan nama aplikasi (\texttt{cloudflared}) dan namespace tempat aplikasi akan di-deploy (\texttt{argo-system})
+  \item \texttt{spec.project}: Menentukan project ArgoCD yang akan digunakan (\texttt{kubernetes})
+  \item \texttt{spec.sources}: Mendefinisikan sumber konfigurasi aplikasi dari repository Git
+        \begin{itemize}
+          \item \texttt{repoURL}: URL repository Git yang berisi konfigurasi Cloudflare Tunnel
+          \item \texttt{path}: Lokasi file konfigurasi dalam repository (\texttt{kubernetes/apps/network/cloudflared})
+          \item \texttt{targetRevision}: Branch atau tag Git yang akan digunakan (\texttt{main})
+        \end{itemize}
+  \item \texttt{spec.destination}: Menentukan cluster dan namespace target untuk deployment
+  \item \texttt{spec.syncPolicy.automated}: Mengaktifkan sinkronisasi otomatis dengan opsi:
+        \begin{itemize}
+          \item \texttt{prune: true}: Secara otomatis menghapus resource yang tidak lagi ada di Git
+          \item \texttt{selfHeal: true}: Secara otomatis memperbaiki perubahan yang dibuat di luar ArgoCD
+        \end{itemize}
+\end{itemize}
 
-1. **Persiapan**
-- Memiliki akun Cloudflare
-- Mendaftarkan domain yang akan digunakan
-- Mengatur DNS di Cloudflare
-
-2. **Instalasi Cloudflare Tunnel**
-Cloudflare Tunnel diinstal menggunakan ArgoCD dengan konfigurasi sebagai berikut:
-
-\begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
-# cloudflared.yaml
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-     name: cloudflared
-     namespace: argo-system
-   spec:
-     project: kubernetes
-     sources:
-       - repoURL: "https://github.com/mozarik/zein-home-lab.git"
-         path: kubernetes/apps/network/cloudflared
-         targetRevision: main
-     destination:
-       name: in-cluster
-       namespace: network
-     syncPolicy:
-       automated:
-         prune: true
-         selfHeal: true
-\end{lstlisting}
+  name: cloudflared
+  namespace: argo-system
+spec:
+  project: kubernetes
+  sources:
+    - repoURL: "https://github.com/mozarik/zein-home-lab.git"
+      path: kubernetes/apps/network/cloudflared
+      targetRevision: main
+  destination:
+    name: in-cluster
+    namespace: network
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Konfigurasi ArgoCD untuk instalasi Cloudflare Tunnel}
+  \label{tab:cloudflared-argocd}
+\end{table}
 
-3. **Konfigurasi Tunnel**
-Setelah terinstal, Cloudflare Tunnel perlu dikonfigurasi untuk meneruskan lalu lintas ke layanan dalam cluster. Berikut contoh konfigurasi untuk mengekspos ArgoCD:
+Setelah terinstal, Cloudflare Tunnel perlu dikonfigurasi untuk meneruskan lalu
+lintas ke layanan dalam cluster. Konfigurasi dasar untuk mengekspos ArgoCD
+melalui Cloudflare Tunnel dapat dilihat pada \textbf{Tabel
+  \ref{tab:cloudflared-config}}. Berikut penjelasan konfigurasi utamanya:
 
-\begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
-   # config.yaml
-   tunnel: <tunnel-id>
-   credentials-file: /etc/cloudflared/credentials.json
-   ingress:
-     - hostname: argo.zeinfahrozi.my.id
-       service: http://argocd-server.argocd.svc.cluster.local:80
-     - service: http_status:404
-   \end{lstlisting}
+\begin{itemize}
+  \item \texttt{tunnel}: ID unik yang mengidentifikasi tunnel Cloudflare. Nilai \texttt{<tunnel-id>} diganti dengan ID tunnel yang didapat dari Cloudflare.
+  \item \texttt{credentials-file}: Lokasi file kredensial yang berisi token otentikasi untuk mengakses akun Cloudflare.
+  \item \texttt{ingress}: Mendefinisikan aturan routing untuk lalu lintas yang masuk:
+        \begin{itemize}
+          \item Aturan pertama mengarahkan permintaan dengan hostname
+                \texttt{argo.zeinfahrozi.my.id} ke service ArgoCD di dalam cluster
+                (\texttt{http://argocd-server.argocd.svc.cluster.local:80})
+          \item Aturan terakhir (\texttt{http\_status:404}) berfungsi sebagai fallback untuk
+                menampilkan error 404 jika tidak ada aturan yang cocok
+        \end{itemize}
+\end{itemize}
 
-\subsection{Konfigurasi Git Repository}
-Git repository digunakan sebagai sumber kebenaran (source of truth) untuk konfigurasi infrastruktur. Repository yang digunakan adalah \url{https://github.com/mozarik/zein-home-lab} dengan struktur sebagai berikut:
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
+# config.yaml
+tunnel: <tunnel-id>
+credentials-file: /etc/cloudflared/credentials.json
+ingress:
+  - hostname: argo.zeinfahrozi.my.id
+    service: http://argocd-server.argocd.svc.cluster.local:80
+  - service: http_status:404
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Konfigurasi dasar Cloudflare Tunnel untuk ArgoCD}
+  \label{tab:cloudflared-config}
+\end{table}
 
+Setelah konfigurasi di atas diterapkan, Cloudflare Tunnel akan secara otomatis
+membuat koneksi aman dari jaringan Cloudflare ke cluster Kubernetes. Layanan
+ArgoCD dapat diakses melalui domain \texttt{argo.zeinfahrozi.my.id} dengan
+enkripsi TLS end-to-end. Semua lalu lintas akan melewati jaringan Cloudflare
+sehingga meningkatkan keamanan dan performa akses.
 
-Alur kerja GitOps yang diterapkan:
-1. Perubahan konfigurasi dilakukan melalui pull request
-2. Setelah pull request disetujui dan digabungkan ke branch main
-3. ArgoCD secara otomatis mendeteksi perubahan dan melakukan sinkronisasi dengan cluster
+\subsubsection{Konfigurasi Git Repository}
+Git repository digunakan sebagai sumber kebenaran (source of truth) untuk
+konfigurasi infrastruktur. Repository yang digunakan adalah
+\url{https://github.com/mozarik/zein-home-lab}.
 
-\subsection{Integrasi dengan GitHub Actions}
-Untuk memastikan kualitas kode dan keamanan, diterapkan GitHub Actions workflow yang akan:
-1. Melakukan linting pada file konfigurasi Kubernetes
-2. Melakukan validasi dengan kubeval
-3. Melakukan pengecekan keamanan dengan kubesec
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/pull-based-deployments.png}}
+  \caption{Flow Pull Based Deployments}
+  \label{fig:flow_pull_based_deployments}
+\end{figure}
 
-Contoh workflow GitHub Actions:
+Pada \textbf{Gambar \ref{fig:flow_pull_based_deployments}} mengambarkan flow
+pull based deployments yang akan digunakan pada penelitian ini. Pada flow ini
+setiap perubahan yang terjadi pada repository akan di-sync dengan kubernetes
+cluster melalui ArgoCD sebagai operator yang menjadi observer dan melakukan
+sinkronisasi antara status yang diinginkan (yang didefinisikan di Git) dengan
+status aktual di cluster.
 
-\begin{lstlisting}[language=yaml, basicstyle=\footnotesize\ttfamily]
-name: Lint and Validate
+\section{Implementasi Microservice}
+Implementasi microservice pada penelitian ini terdiri dari beberapa service
+yang ditulis menggunakan bahasa pemrograman Go/Golang. Service yang dibuat akan
+dilakukan containerization menggunakan Docker agar dapat digunakan sebagai
+image pada kubernetes cluster. Setelah containerization selesai, image tersebut
+akan dideploy pada kubernetes cluster menggunakan ArgoCD.
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+Terdapat 4 Service yang akan diimplementasikan yaitu UI Service (Entrypoint),
+Auth Service, Color Service, dan Prime Generator Service. UI Service akan
+berfungsi sebagai entrypoint untuk user dan akan memanggil service lainnya
+berdasarkan permintaan user. Auth Service akan berfungsi sebagai autentikasi
+dan otorisasi user sebelum bisa mengakses service lainnya. Color Service akan
+berfungsi sebagai service yang akan menghasilkan warna acak berdasarkan
+permintaan user. Prime Generator Service akan berfungsi sebagai service yang
+akan menghasilkan bilangan prima berdasarkan permintaan user dimana user
+menginput batas digit bilangan prima yang diinginkan.
 
-jobs:
-  lint-validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
+\subsection{Implementasi UI Service}
+UI Service atau Frontend service akan menjadi entrypoint dari User agar dapat
+mengakses service lainnya. UI Service akan menggunakan bahasa pemrograman
+Go/Golang dengan menggunakan HTMX sebagai library untuk pengembangan UI. UI
+Service terdiri dari beberapa halaman yaitu halaman login dan halaman dashboard
+service yang digunakan untuk menampilkan data dari service lainnya.
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+func serveHome(w http.ResponseWriter, r *http.Request) {
+    html := fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<head>
+    <title>HTMX Frontend (Created By Zein)</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+<body>
+    <h1>Welcome</h1>
+    <p><em>Version: %s</em></p>
+    <a href="/login">Login to access protected page</a>
+</body>
+</html>`, version)
+    w.Header().Set("Content-Type", "text/html")
+    fmt.Fprint(w, html)
+}
+
+func serveLogin(w http.ResponseWriter, r *http.Request) {
+    html := fmt.Sprintf(`<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+</head>
+<body>
+    <h2>Login</h2>
+    <p><em>Version: %s</em></p>
+    <form hx-post="/do_login" hx-target="#login_result" hx-swap="innerHTML">
+        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+    <div id="login_result"></div>
+</body>
+</html>`, version)
+    w.Header().Set("Content-Type", "text/html")
+    fmt.Fprint(w, html)
+}
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi UI Service Halaman Login}
+  \label{tab:implementasi-ui-service-login}
+\end{table}
+Pada \textbf{Table \ref{tab:implementasi-ui-service-login}} menampilkan bagian
+code untuk halaman login UI Service. Halaman ini akan tampil juga menjadi
+halama home UI Service. Pada Gambarxxx menampilkan halaman home sekaligus login page pada UI Service
+dimana user dapat login menggunakan username dan password yang telah diatur
+pada service Auth Service.
+% TODO: Masukan gambar UI service login lalu jelaskan
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+      func handleLogin(w http.ResponseWriter, r *http.Request) {
+        username := r.FormValue("username")
+        password := r.FormValue("password")
+    
+        req, err := http.NewRequest("POST", authServiceURL, nil)
+        if err != nil {
+            http.Error(w, "Internal error", http.StatusInternalServerError)
+            return
+        }
+        req.SetBasicAuth(username, password)
+        resp, err := http.DefaultClient.Do(req)
+        if err != nil || resp.StatusCode != http.StatusOK {
+            fmt.Fprint(w, "<span style='color:red'>Login failed</span>")
+            return
+        }
+    
+        http.SetCookie(w, &http.Cookie{
+            Name:  "session_user",
+            Value: username,
+            Path:  "/",
+        })
+        fmt.Fprintf(w, `<span style="color:green">Login successful! <a href="/protected">Go to protected page</a></span><br><em>Version: %s</em>`, version)
+    }
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi Algoritma Login UI Service}
+  \label{tab:implementasi-algoritma-login-ui-service}
+\end{table}
+Pada \textbf{Table \ref{tab:implementasi-algoritma-login-ui-service}} menampilkan bagian
+code untuk algoritma login UI Service. Algoritma ini akan melakukan autentikasi
+user menggunakan username dan password yang diinputkan oleh user dan akan
+mengirimkan request ke service Auth Service untuk memverifikasi autentikasi
+user.
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+      func serveProtected(w http.ResponseWriter, r *http.Request) {
+        cookie, err := r.Cookie("session_user")
+        if err != nil || cookie.Value == "" {
+          http.Redirect(w, r, "/login", http.StatusFound)
+          return
+        }
       
-      - name: Lint Kubernetes files
-        uses: azure/k8s-manifests-base@v1
-        with:
-          action: lint
-          files: '**/*.yaml'
+        html := fmt.Sprintf(`<!DOCTYPE html>
+      <html>
+      <head>
+          <title>Protected Page</title>
+          <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+      </head>
+      <body>
+          <h2>Protected Page</h2>
+          <p><em>Version: %s</em></p>
+          <p>Welcome, %s!</p>
+          <button hx-get="/get_color" hx-target="#color_result" hx-swap="innerHTML">Get Random Color</button>
+          <div id="color_result"></div>
+          <br>
+          <a href="/">Back to Home</a>
+      </body>
+      </html>`, version, cookie.Value)
+        w.Header().Set("Content-Type", "text/html")
+        fmt.Fprint(w, html)
+      }
+      
+      func handleGetColor(w http.ResponseWriter, r *http.Request) {
+        resp, err := http.Get(colorServiceURL)
+        if err != nil {
+          http.Error(w, "Failed to get color", http.StatusInternalServerError)
+          return
+        }
+        defer resp.Body.Close()
+        color, _ := io.ReadAll(resp.Body)
+        fmt.Fprintf(w, "<div style='color:%s'>Random Color: %s<br><em>Version: %s</em></div>", color, color, version)
+      }
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi Dashboard Service}
+  \label{tab:implementasi-algoritma-dashboard-service}
+\end{table}
 
-      - name: Validate Kubernetes files
-        uses: azure/k8s-manifests-base@v1
-        with:
-          action: validate
-          files: '**/*.yaml'
-\end{lstlisting}
+Pada \textbf{Table \ref{tab:implementasi-algoritma-dashboard-service}}
+menampilkan implementasi halaman dashboard yang dilindungi (protected page)
+beserta fungsionalitas untuk mendapatkan warna acak dari Color Service. Halaman
+ini hanya dapat diakses oleh pengguna yang sudah login, yang ditandai dengan
+adanya session cookie. Fungsi \texttt{serveProtected} akan mengecek keberadaan
+cookie session dan menampilkan halaman dashboard jika valid, sementara
+\texttt{handleGetColor} akan memanggil Color Service untuk mendapatkan warna
+acak yang akan ditampilkan ke pengguna.
 
-Dengan konfigurasi ini, seluruh perubahan infrastruktur dapat dilacak melalui riwayat Git, dan proses deployment menjadi lebih terotomatisasi dan konsisten.
+\subsection{Implementasi Auth Service}
+Auth service sendiri mempunyai fungsionalitas untuk melakukan autentikasi user
+agar dapat mengakses dashboard dari UI Service. Auth service akan memvalidasi
+username dan password yang diinputkan oleh user dan akan mengirimkan response
+ke UI Service untuk menampilkan halaman dashboard.
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+    const (
+        validUser = "user"
+        validPass = "pass"
+    )
+    
+    func main() {
+        http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
+            auth := r.Header.Get("Authorization")
+            if !strings.HasPrefix(auth, "Basic ") {
+                http.Error(w, "Unauthorized", http.StatusUnauthorized)
+                return
+            }
+            payload, _ := base64.StdEncoding.DecodeString(
+              strings.TrimPrefix(auth, "Basic ")
+            )
+            pair := strings.SplitN(string(payload), ":", 2)
+            if len(pair) != 2 || pair[0] != validUser || pair[1] != validPass {
+                http.Error(w, "Unauthorized", http.StatusUnauthorized)
+                return
+            }
+            w.WriteHeader(http.StatusOK)
+            w.Write([]byte("OK"))
+        })
+        http.ListenAndServe(":8080", nil)
+    }
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi Auth Service}
+  \label{tab:implementasi-auth-service}
+\end{table}
+Pada \textbf{Table \ref{tab:implementasi-auth-service}} menampilkan bagian
+code untuk algoritma autentikasi user. Algoritma ini akan melakukan autentikasi
+user menggunakan username dan password yang diinputkan oleh user dan akan
+mengirimkan response ke UI Service untuk menampilkan halaman dashboard.
+
+\subsection{Implementasi Color Service}
+Color service sendiri mempunyai fungsionalitas untuk mendapatkan warna acak
+yang akan ditampilkan ke pengguna. Pada \textbf{Table
+  \ref{tab:implementasi-color-service}} menampilkan bagian code untuk algoritma
+color service. Algoritma ini akan mendapatkan warna acak yang akan menjadi
+response dari Color Service. Color Service akan mengirimkan response tersebut
+ke UI Service yang akan menampilkan warna acak tersebut ke pengguna.
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+    func main() {
+        http.HandleFunc("/get_color", func(w http.ResponseWriter, r *http.Request) {
+            colors := []string{"red", "green", "blue", "yellow", "purple", "orange"}
+            color := colors[rand.Intn(len(colors))]
+            fmt.Fprint(w, color)
+        })
+        http.ListenAndServe(":8080", nil)
+    }
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi Color Service}
+  \label{tab:implementasi-color-service}
+\end{table}
+
+\subsection{Implementasi Prime Generator Service}
+Prime generator service sendiri mempunyai fungsionalitas untuk mendapatkan
+bilangan prima berdasarkan input dari user. User akan melalukan input berupa
+jumlah digit bilangan prima yang diinginkan dan akan mendapatkan response
+berupa bilangan prima yang diinginkan. Pada \textbf{Table
+  \ref{tab:implementasi-prime-generator-service}} menampilkan bagian code untuk
+algoritma prime generator service. Algoritma ini akan mendapatkan bilangan
+prima berdasarkan input dari user dan akan mengirimkan response tersebut ke UI
+Service yang akan menampilkan bilangan prima tersebut ke pengguna.
+
+\begin{table}[H]
+  \centering
+  \begin{minipage}{0.95\linewidth}
+    \begin{lstlisting}[language=go, basicstyle=\footnotesize\ttfamily]
+    func main() {
+        http.HandleFunc("/get_prime", func(w http.ResponseWriter, r *http.Request) {
+            digits := r.URL.Query().Get("digits")
+            if digits == "" {
+                http.Error(w, "Missing digits parameter", http.StatusBadRequest)
+                return
+            }
+            prime := generatePrime(digits)
+            fmt.Fprint(w, prime)
+        })
+        http.ListenAndServe(":8080", nil)
+    }
+    \end{lstlisting}
+  \end{minipage}
+  \caption{Implementasi Prime Generator Service}
+  \label{tab:implementasi-prime-generator-service}
+\end{table}
 
 \section{Testing}
-Setelah menyelesaikan tahap instalasi dan konfigurasi infrastruktur, langkah selanjutnya adalah melakukan pengujian untuk memastikan seluruh komponen berfungsi seperti yang diharapkan. Pengujian ini mencakup beberapa aspek penting termasuk fungsionalitas Kubernetes cluster, integrasi ArgoCD, serta alur kerja GitOps yang telah diterapkan. Melalui pengujian menyeluruh ini, diharapkan dapat dievaluasi sejauh mana solusi yang dibangun mampu memenuhi kebutuhan pengembangan dan operasional aplikasi secara efisien.
+Setelah menyelesaikan tahap instalasi dan konfigurasi infrastruktur, langkah
+selanjutnya adalah melakukan pengujian untuk memastikan seluruh komponen
+berfungsi seperti yang diharapkan. Pengujian ini mencakup beberapa aspek
+penting termasuk fungsionalitas Kubernetes cluster, integrasi ArgoCD, serta
+alur kerja GitOps yang telah diterapkan. Melalui pengujian menyeluruh ini,
+diharapkan dapat dievaluasi sejauh mana solusi yang dibangun mampu memenuhi
+kebutuhan pengembangan dan operasional aplikasi secara efisien.
 
 \subsection{Pengujian (Testing)}\label{sec:bab4_pengujian}
-Pengujian black-box testing yang dilakukan terhadap sistem pada tahap ini menggunakan metode validasi (validation). Metode validasi yang digunakan dalam melakukan pengujian ini berfungsi untuk mengetahui valid atau tidaknya sebuah fungsi dari sistem yang dibangun. Melakukan pengujian black-box dengan metode validasi ini juga menentukan apakah sistem telah sesuai seperti apa yang diinginkan oleh stakeholder pada tahap perencanaan. Pengujian black-box ini dilakukan dengan jumlah test case sebanyak 15 (lima belas) yang mencakup berbagai aspek fungsionalitas ArgoCD.
+Pengujian black-box testing yang dilakukan terhadap sistem pada tahap ini
+menggunakan metode validasi (validation). Metode validasi yang digunakan dalam
+melakukan pengujian ini berfungsi untuk mengetahui valid atau tidaknya sebuah
+fungsi dari sistem yang dibangun. Melakukan pengujian black-box dengan metode
+validasi ini juga menentukan apakah sistem telah sesuai seperti apa yang
+diinginkan oleh stakeholder pada tahap perencanaan. Pengujian black-box ini
+dilakukan dengan jumlah test case sebanyak 15 (lima belas) yang mencakup
+berbagai aspek fungsionalitas ArgoCD.
 
 \subsection{Metodologi Pengujian}
-Pengujian dilakukan dengan pendekatan black-box testing yang berfokus pada fungsionalitas sistem tanpa memperhatikan struktur internal kode. Setiap test case dirancang untuk memverifikasi fitur-fitur kunci dari ArgoCD dalam mendukung alur kerja GitOps.
+Pengujian dilakukan dengan pendekatan black-box testing yang berfokus pada
+fungsionalitas sistem tanpa memperhatikan struktur internal kode. Setiap test
+case dirancang untuk memverifikasi fitur-fitur kunci dari ArgoCD dalam
+mendukung alur kerja GitOps.
 
 \subsection{Hasil Pengujian}\label{subsec:hasil_pengujian}
 Berikut adalah daftar test case yang telah dilakukan beserta hasilnya:
@@ -442,40 +874,40 @@ Berikut adalah daftar test case yang telah dilakukan beserta hasilnya:
   \begin{adjustbox}{width=\textwidth}
     \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
       \hline
-      \textbf{Kode Uji} & \textbf{Nama Uji}         & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                     & \textbf{Status} \\
+      \textbf{Kode Uji} & \textbf{Nama Uji}         & \textbf{Kasus Uji}                                               & \textbf{Hasil Yang Diharapkan}                                     & \textbf{Status} \\
       \hline
       BT-001            & Login ke Dashboard ArgoCD & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Buka halaman login ArgoCD
                                                         \item Masukkan kredensial admin
                                                         \item Klik tombol login
-                                                      \end{enumerate} & Pengguna berhasil login dan diarahkan ke dashboard utama           & Valid                                                                          \\ \hline
+                                                      \end{enumerate}  & Pengguna berhasil login dan diarahkan ke dashboard utama           & Valid                                                           \\ \hline
       BT-002            & Tambah Aplikasi Baru      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Klik "New App"
                                                         \item Isi form dengan detail aplikasi
                                                         \item Klik "Create"
-                                                      \end{enumerate} & Aplikasi baru berhasil dibuat dan muncul di daftar aplikasi        & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & Aplikasi baru berhasil dibuat dan muncul di daftar aplikasi        & Valid                                                            \\ \hline
       BT-003            & Sinkronisasi Otomatis     & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Buat perubahan pada file konfigurasi di repo Git
                                                         \item Push perubahan ke branch yang dimonitor
-                                                      \end{enumerate} & ArgoCD mendeteksi perubahan dan melakukan sinkronisasi otomatis    & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & ArgoCD mendeteksi perubahan dan melakukan sinkronisasi otomatis    & Valid                                                            \\ \hline
       BT-004            & Rollback Aplikasi         & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Pilih aplikasi
                                                         \item Klik "History and Rollback"
                                                         \item Pilih versi sebelumnya
                                                         \item Klik "Sync"
-                                                      \end{enumerate} & Aplikasi berhasil di-rollback ke versi sebelumnya                  & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & Aplikasi berhasil di-rollback ke versi sebelumnya                  & Valid                                                            \\ \hline
       BT-005            & Validasi Status Kesehatan & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Deploy aplikasi dengan konfigurasi salah
                                                         \item Periksa status di dashboard
-                                                      \end{enumerate} & Menampilkan status "Degraded" atau "Error" dengan pesan yang jelas & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & Menampilkan status "Degraded" atau "Error" dengan pesan yang jelas & Valid                                                            \\ \hline
       BT-006            & Pencarian Aplikasi        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Gunakan fitur search di dashboard
                                                         \item Masukkan nama aplikasi
-                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan kata kunci pencarian       & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan kata kunci pencarian       & Valid                                                            \\ \hline
       BT-007            & Filter Aplikasi           & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                         \item Gunakan filter berdasarkan status/kategori
                                                         \item Pilih filter tertentu
-                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan filter yang dipilih        & Valid                                                                          \\ \hline
+                                                      \end{enumerate} & Menampilkan aplikasi yang sesuai dengan filter yang dipilih        & Valid                                                            \\ \hline
     \end{tabular}
   \end{adjustbox}
 \end{table}
@@ -490,68 +922,78 @@ Berikut adalah daftar test case yang telah dilakukan beserta hasilnya:
   \begin{adjustbox}{width=\textwidth}
     \begin{tabular}{|p{0.8cm}|p{2.2cm}|p{4cm}|p{3.5cm}|p{1.2cm}|}
       \hline
-      \textbf{Kode Uji} & \textbf{Nama Uji}       & \textbf{Kasus Uji}                                                             & \textbf{Hasil Yang Diharapkan}                                      & \textbf{Status} \\
+      \textbf{Kode Uji} & \textbf{Nama Uji}       & \textbf{Kasus Uji}                                                      & \textbf{Hasil Yang Diharapkan}                                      & \textbf{Status} \\
       \hline
       BT-008            & Manajemen Kluster       & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Tambah kluster baru
                                                       \item Verifikasi koneksi
-                                                    \end{enumerate} & Kluster baru terdaftar dan terhubung dengan status "Healthy"        & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Kluster baru terdaftar dan terhubung dengan status "Healthy"        & Valid                                                            \\ \hline
       BT-009            & Logout                  & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Klik profil pengguna
                                                       \item Pilih "Logout"
-                                                    \end{enumerate} & Pengguna berhasil logout dan diarahkan ke halaman login             & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Pengguna berhasil logout dan diarahkan ke halaman login             & Valid                                                            \\ \hline
       BT-010            & Responsivitas UI        & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Akses dashboard dari berbagai perangkat (desktop, tablet, mobile)
-                                                    \end{enumerate} & Tampilan UI menyesuaikan dengan ukuran layar                        & Valid                                                                          \\ \hline
+                                                    \end{enumerate} & Tampilan UI menyesuaikan dengan ukuran layar                        & Valid                                                                   \\ \hline
       BT-011            & Notifikasi Sinkronisasi & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Lakukan sinkronisasi manual
                                                       \item Periksa notifikasi
-                                                    \end{enumerate} & Muncul notifikasi yang menampilkan status sinkronisasi              & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Muncul notifikasi yang menampilkan status sinkronisasi              & Valid                                                            \\ \hline
       BT-012            & Error Handling          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Masukkan URL repo Git yang tidak valid
                                                       \item Coba buat aplikasi
-                                                    \end{enumerate} & Menampilkan pesan error yang jelas tentang URL yang tidak valid     & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Menampilkan pesan error yang jelas tentang URL yang tidak valid     & Valid                                                            \\ \hline
       BT-013            & Ekspor Konfigurasi      & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Pilih aplikasi
                                                       \item Ekspor konfigurasi
-                                                    \end{enumerate} & File konfigurasi berhasil diunduh dalam format YAML                 & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & File konfigurasi berhasil diunduh dalam format YAML                 & Valid                                                            \\ \hline
       BT-014            & Manajemen Izin          & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Buat pengguna dengan role terbatas
                                                       \item Verifikasi akses
-                                                    \end{enumerate} & Pengguna hanya dapat mengakses fitur sesuai role yang diberikan     & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Pengguna hanya dapat mengakses fitur sesuai role yang diberikan     & Valid                                                            \\ \hline
       BT-015            & Audit Log               & \begin{enumerate}[leftmargin=*,noitemsep,topsep=0pt,label=\arabic*.,widest=99]
                                                       \item Lakukan beberapa aksi di dashboard
                                                       \item Periksa halaman audit log
-                                                    \end{enumerate} & Semua aksi terekam dalam log dengan timestamp dan detail yang jelas & Valid                                                                          \\ \hline
+                                                    \end{enumerate}        & Semua aksi terekam dalam log dengan timestamp dan detail yang jelas & Valid                                                            \\ \hline
     \end{tabular}
   \end{adjustbox}
 \end{table}
 
 \subsection{Analisis Hasil Pengujian}\label{subsec:analisis_hasil}
-Berdasarkan hasil pengujian yang telah dilakukan, dapat dianalisis bahwa implementasi ArgoCD berhasil memenuhi kebutuhan dalam mendukung alur kerja GitOps pada infrastruktur Kubernetes. Berikut adalah analisis mendalam dari hasil pengujian:
+Berdasarkan hasil pengujian yang telah dilakukan, dapat dianalisis bahwa
+implementasi ArgoCD berhasil memenuhi kebutuhan dalam mendukung alur kerja
+GitOps pada infrastruktur Kubernetes. Berikut adalah analisis mendalam dari
+hasil pengujian:
 
 \subsubsection{Ketahanan Sistem}
-Sistem berhasil melewati semua skenario pengujian yang mencakup berbagai aspek fungsionalitas ArgoCD. Hal ini menunjukkan bahwa arsitektur yang dirancang telah memenuhi kebutuhan dasar dalam implementasi GitOps.
+Sistem berhasil melewati semua skenario pengujian yang mencakup berbagai aspek
+fungsionalitas ArgoCD. Hal ini menunjukkan bahwa arsitektur yang dirancang
+telah memenuhi kebutuhan dasar dalam implementasi GitOps.
 
 \subsubsection{Kesesuaian dengan Ekspektasi}
-Dari 15 test case yang dilakukan, seluruhnya menunjukkan hasil yang sesuai dengan ekspektasi. Ini menunjukkan bahwa ArgoCD dapat diandalkan untuk mengelola aplikasi pada cluster Kubernetes dengan pendekatan GitOps.
+Dari 15 test case yang dilakukan, seluruhnya menunjukkan hasil yang sesuai
+dengan ekspektasi. Ini menunjukkan bahwa ArgoCD dapat diandalkan untuk
+mengelola aplikasi pada cluster Kubernetes dengan pendekatan GitOps.
 
 \subsubsection{Keandalan Fitur Inti}
-Fitur-fitur inti seperti sinkronisasi otomatis, rollback, dan manajemen konfigurasi berfungsi dengan baik. Hal ini menjadi bukti bahwa ArgoCD dapat diandalkan untuk keperluan continuous deployment dalam lingkungan produksi.
+Fitur-fitur inti seperti sinkronisasi otomatis, rollback, dan manajemen
+konfigurasi berfungsi dengan baik. Hal ini menjadi bukti bahwa ArgoCD dapat
+diandalkan untuk keperluan continuous deployment dalam lingkungan produksi.
 
 \subsubsection{Keterbatasan}
-Meskipun semua test case berhasil, terdapat beberapa aspek yang memerlukan perhatian lebih lanjut, seperti manajemen kredensial yang aman dan pengaturan RBAC yang lebih ketat untuk keperluan produksi.
+Meskipun semua test case berhasil, terdapat beberapa aspek yang memerlukan
+perhatian lebih lanjut, seperti manajemen kredensial yang aman dan pengaturan
+RBAC yang lebih ketat untuk keperluan produksi.
 
 \subsubsection{Rekomendasi}
-Berdasarkan hasil pengujian, berikut beberapa rekomendasi untuk pengembangan selanjutnya:
+Berdasarkan hasil pengujian, berikut beberapa rekomendasi untuk pengembangan
+selanjutnya:
 \begin{enumerate}
   \item Implementasi mekanisme backup dan recovery yang lebih komprehensif
   \item Peningkatan pengujian keamanan dan penetrasi
   \item Pengembangan pipeline CI/CD yang lebih matang
   \item Implementasi monitoring dan alerting yang lebih baik
 \end{enumerate}
-
-
 
 % * Revisi Rumusan hasil rumusan di bab 4
 % * Revisi terkait penulisan implementasi yang ada di github masukan di skripsi
@@ -562,7 +1004,6 @@ Berdasarkan hasil pengujian, berikut beberapa rekomendasi untuk pengembangan sel
 % * dalam subbab perlu a,b,c bukan 1,2,3 (contoh di halaman 13)
 % * gambar dijelaskan why nya
 % * bab 2 tolong ditambahkan literatur nya dan ditampilkan penelitian terdahulu
-
 
 % format penulisan
 % * Penulisan sub bab harus melihat penjelasan dan kalimat yang diutarakan
