@@ -44,32 +44,34 @@
 \usepackage{minted}
 \usemintedstyle{vs}  % Gaya warna seperti Visual Studio
 \setminted{
-	fontsize=\small,
-	breaklines=true,
-	breakanywhere=true,
-	breaksymbolleft=\small\color{red!50!black},
-	frame=lines,
-	framesep=2mm,
-	baselinestretch=1.2,
-	linenos,
-	numbersep=5pt,
-	gobble=0
+  fontsize=\small,
+  breaklines=true,
+  breakanywhere=true,
+  breaksymbolleft=\small\color{red!50!black},
+  frame=lines,
+  framesep=2mm,
+  baselinestretch=1.2,
+  linenos,
+  numbersep=5pt,
+  gobble=0
 }
-\renewcommand{\listingscaption}{Kode Sumber}
-\renewcommand{\listoflistingscaption}{Daftar Kode Sumber}
 
 % Untuk menambahkan package link
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
-	pdftitle={Skripsi},
-	pdfauthor={\textcopyright\ Muhammad Zein Ihza Fahrozi},
-	pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
-	pdfsubject={Automatic Deployment Aplikasi berbasis Microservice Pada
-			Platform Kubernetes Dengan Metode Pull-Up},
-	pdfkeywords={Latex, Template Latex}
+  pdftitle={Skripsi},
+  pdfauthor={\textcopyright\ Muhammad Zein Ihza Fahrozi},
+  pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
+  pdfsubject={Automatic Deployment Aplikasi berbasis Microservice Pada
+      Platform Kubernetes Dengan Metode Pull-Up},
+  pdfkeywords={Latex, Template Latex}
 }
 
+% Untuk daftar kode program (listings)
 \usepackage{listings}
+% \renewcommand*{\lstlistingname}{Kode Program  \arabic{chapter}.\arabic{table}}
+\renewcommand{\lstlistingname}{Kode Program}
+\renewcommand{\lstlistlistingname}{Daftar Kode Program}
 \usepackage{xcolor}
 
 \newcommand\YAMLcolonstyle{\color{red}\mdseries}
@@ -106,17 +108,17 @@ literate = {---}{{\ProcessThreeDashes}}3
 \newcommand\ProcessThreeDashes{\llap{\color{cyan}\mdseries-{-}-}}
 
 \lstset{
-	basicstyle=\ttfamily\small,
-	commentstyle=\color{green!50!black},
-	keywordstyle=\color{blue},
-	stringstyle=\color{red},
-	numbers=left,
-	numberstyle=\tiny\color{gray},
-	breaklines=true,
-	showspaces=false,
-	showstringspaces=false,
-	breakatwhitespace=true,
-	frame=single
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{green!50!black},
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  showspaces=false,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  frame=single
 }
 
 % Membuat seluruh tulisan menjadi Times New Roman. 
@@ -152,7 +154,6 @@ literate = {---}{{\ProcessThreeDashes}}3
 \setlength{\cftbeforechapskip}{0.5em}  % Jarak vertikal sebelum bab
 \setlength{\cftbeforesecskip}{0.5em}   % Jarak vertikal sebelum sub bab
 \setlength{\cftbeforesubsecskip}{0.2em}
-
 
 % Mengatur font section
 \usepackage{sectsty}
@@ -205,13 +206,13 @@ literate = {---}{{\ProcessThreeDashes}}3
 % Menggatur setting halaman 
 \usepackage{geometry}
 \geometry{
-	a4paper,
-	left=4cm,            % <-- you want to adjust this
-	top=4cm,
-	right=3cm,
-	bottom=3cm,
-	headheight=1.2cm,       % <-- and this
-	headsep=1cm,          % <-- and this
+  a4paper,
+  left=4cm,            % <-- you want to adjust this
+  top=4cm,
+  right=3cm,
+  bottom=3cm,
+  headheight=1.2cm,       % <-- and this
+  headsep=1cm,          % <-- and this
 }
 
 % Teks testing
@@ -242,12 +243,12 @@ literate = {---}{{\ProcessThreeDashes}}3
 
 % Define the watermark command
 \newcommand\AddWatermark{
-    \ifshowwatermark
-        \begin{tikzpicture}[remember picture,overlay]
-            \node[opacity=0.2,inner sep=0pt] at (current page.center) 
-                {\includegraphics[width=0.7\paperwidth,keepaspectratio]{figures/watermark-logo-umm.jpg}};
-        \end{tikzpicture}%
-    \fi
+  \ifshowwatermark
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[opacity=0.2,inner sep=0pt] at (current page.center)
+      {\includegraphics[width=0.7\paperwidth,keepaspectratio]{figures/watermark-logo-umm.jpg}};
+    \end{tikzpicture}%
+  \fi
 }
 
 % Add watermark to every page by default

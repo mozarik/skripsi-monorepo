@@ -9,6 +9,12 @@
 \usepackage{adjustbox}
 \usepackage[numbers]{natbib}
 \usepackage{xcolor} % in your preamble
+\AtBeginDocument{
+    \renewcommand\thelstlisting{\arabic{chapter}.\arabic{lstlisting}}
+}
+\lstset{captionpos=b}
+
+
 
 
 % * Revisi Rumusan hasil rumusan di bab 4
@@ -70,16 +76,24 @@
 \tableofcontents
 \phantomsection \addcontentsline{toc}{chapter}{DAFTAR ISI}
 \clearpage
+
 % Daftar Tabel
 \vspace*{-2.5cm}
 \listoftables
 \phantomsection \addcontentsline{toc}{chapter}{DAFTAR TABEL}
 \clearpage
-% Daftar Gambar
+
+% Daftar Gambar 
 \vspace*{-2.5cm}
 \listoffigures
 \phantomsection
 \addcontentsline{toc}{chapter}{DAFTAR GAMBAR}
+
+% Daftar Kode Program
+\vspace*{-2.5cm}
+\lstlistoflistings
+\phantomsection
+\addcontentsline{toc}{chapter}{DAFTAR KODE PROGRAM}
 \clearpage
 
 % Gunakan penomeran Arab (1, 2, 3, ...) setelah bagian ini.
