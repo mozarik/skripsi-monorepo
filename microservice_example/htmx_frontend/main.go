@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strings"
+	"strconv"
 )
 
 // const (
@@ -73,20 +75,48 @@ func serveLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGeneratePrime(w http.ResponseWriter, r *http.Request) {
-	digit := r.FormValue("digit")
-	reqBody := fmt.Sprintf(`{"digit": %s}`, digit)
-	resp, err := http.Post(primeServiceURL, "application/json",
-		io.NopCloser(strings.NewReader(reqBody)))
+	// Get and validate digit parameter
+	digitStr := r.FormValue("digit")
+	digit, err := strconv.Atoi(digitStr)
+	if err != nil || digit < 1 || digit > 6 {
+		http.Error(w, "Invalid digit parameter", http.StatusBadRequest)
+		return
+	}
+
+	// Create proper JSON payload
+	reqPayload := struct {
+		Digit int `json:"digit"`
+	}{Digit: digit}
+
+	jsonData, err := json.Marshal(reqPayload)
+	if err != nil {
+		http.Error(w, "Failed to marshal JSON", http.StatusInternalServerError)
+		return
+	}
+
+	// Send JSON request to prime service
+	resp, err := http.Post(primeServiceURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		fmt.Fprintf(w, "<span style='color:red'>Failed to connect to prime service</span>")
 		return
 	}
 	defer resp.Body.Close()
-	body, _ := io.ReadAll(resp.Body)
+
+	// Read response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to read response from prime service", http.StatusInternalServerError)
+		return
+	}
+
+	// Handle non-200 responses
 	if resp.StatusCode != http.StatusOK {
 		fmt.Fprintf(w, "<span style='color:red'>%s</span>", body)
 		return
 	}
+
+	// Return HTML response
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	fmt.Fprintf(w, "<div>Prime Result: %s<br><em>Version: %s</em></div>", body, version)
 }
 

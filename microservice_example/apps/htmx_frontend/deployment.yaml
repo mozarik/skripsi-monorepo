@@ -23,7 +23,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: app
-        image: ghcr.io/mozarik/htmx_frontend:f37a47f
+        image: ghcr.io/mozarik/htmx_frontend:c84a79b
         ports:
         - containerPort: 8080
         securityContext:
