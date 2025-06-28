@@ -8,6 +8,30 @@
 \usepackage{microtype}
 \usepackage{adjustbox}
 \usepackage[numbers]{natbib}
+\usepackage{xcolor} % in your preamble
+\AtBeginDocument{
+    \renewcommand\thelstlisting{\arabic{chapter}.\arabic{lstlisting}}
+}
+\lstset{captionpos=b}
+
+
+
+
+% * Revisi Rumusan hasil rumusan di bab 4
+% * Revisi terkait penulisan implementasi yang ada di github masukan di skripsi
+% * Penjelasan terkait hasil implementasi service pada bab 4 (color, frontend, auth)
+
+% * Tambahkan testing pada sisi service seperti (jaringan, waktu (speed))
+% * gambar dan tabel dirujuk semua lalu diberikan border
+% * dalam subbab perlu a,b,c bukan 1,2,3 (contoh di halaman 13)
+% * gambar dijelaskan why nya
+% * bab 2 tolong ditambahkan literatur nya dan ditampilkan penelitian terdahulu
+
+
+% format penulisan
+% * Penulisan sub bab harus melihat penjelasan dan kalimat yang diutarakan
+% * perlu diperbaiki secara serius dalam uji microservice
+% * uji fungsionalitas terhadap microservice pada bab 4
 
 
 
@@ -47,27 +71,33 @@
 
 \include{skripsi/07_kata_pengantar}
 
-
 % Daftar Isi
 \vspace*{-2.5cm}
 \tableofcontents
 \phantomsection \addcontentsline{toc}{chapter}{DAFTAR ISI}
 \clearpage
+
 % Daftar Tabel
 \vspace*{-2.5cm}
 \listoftables
 \phantomsection \addcontentsline{toc}{chapter}{DAFTAR TABEL}
 \clearpage
-% Daftar Gambar
+
+% Daftar Gambar 
 \vspace*{-2.5cm}
 \listoffigures
 \phantomsection
 \addcontentsline{toc}{chapter}{DAFTAR GAMBAR}
+
+% Daftar Kode Program
+\vspace*{-2.5cm}
+\lstlistoflistings
+\phantomsection
+\addcontentsline{toc}{chapter}{DAFTAR KODE PROGRAM}
 \clearpage
 
 % Gunakan penomeran Arab (1, 2, 3, ...) setelah bagian ini.
 \pagenumbering{arabic}
-
 
 %
 % Atur header dan footer dalam dokumen.
