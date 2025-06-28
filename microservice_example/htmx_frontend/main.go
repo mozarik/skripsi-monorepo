@@ -41,7 +41,7 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 </head>
 <body>
-    <h1>Welcome</h1>
+    <h1>Welcome Muhammad Zein Ihza Fahrozi</h1>
     <p><em>Version: %s</em></p>
     <a href="/login">Login to access protected page</a>
 </body>
