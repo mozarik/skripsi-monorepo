@@ -42,7 +42,7 @@ func generatePrimes(digit int) ([]int, error) {
 	primes := []int{}
 	rand.Seed(time.Now().UnixNano())
 	attempts := 0
-	for len(primes) < 3 && attempts < 10000 {
+	for len(primes) < 5 && attempts < 10000 {
 		num := rand.Intn(max-min+1) + min
 		if isPrime(num) {
 			already := false
@@ -58,8 +58,8 @@ func generatePrimes(digit int) ([]int, error) {
 		}
 		attempts++
 	}
-	if len(primes) < 3 {
-		return nil, fmt.Errorf("could not find 3 prime numbers with %d digits", digit)
+	if len(primes) < 5 {
+		return nil, fmt.Errorf("could not find 5 prime numbers with %d digits", digit)
 	}
 	return primes, nil
 }
