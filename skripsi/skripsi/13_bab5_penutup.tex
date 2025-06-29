@@ -3,38 +3,47 @@
 %-----------------------------------------------------------------------------%
 \section{Kesimpulan}
 
-Berdasarkan hasil penelitian dan implementasi yang telah dilakukan, dapat disimpulkan beberapa hal penting sebagai berikut:
+Berdasarkan hasil penelitian dan implementasi yang telah dilakukan, dapat
+disimpulkan beberapa hal penting sebagai berikut:
 
-\begin{enumerate}
-    \item \textbf{Implementasi Arsitektur GitOps Berbasis Pull} berhasil dibangun dengan mengintegrasikan ArgoCD pada lingkungan Kubernetes yang berjalan di atas infrastruktur Proxmox VE dan Talos OS. Arsitektur ini mengatasi tantangan utama dalam deployment aplikasi microservices dengan menyediakan mekanisme otomatisasi yang andal dan aman.
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Implementasi Arsitektur GitOps Berbasis Pull} berhasil dibangun dengan mengintegrasikan ArgoCD pada lingkungan Kubernetes yang berjalan di atas infrastruktur Proxmox VE dan Talos OS. Arsitektur ini mengatasi tantangan utama dalam deployment aplikasi microservices dengan menyediakan mekanisme otomatisasi yang andal dan aman.
 
-    \item \textbf{Keunggulan Pendekatan Pull-based} dalam GitOps terbukti memberikan manfaat signifikan, terutama dalam hal:
-          \begin{itemize}
-              \item Keamanan yang lebih baik karena tidak memerlukan akses langsung ke cluster Kubernetes dari pipeline CI/CD
-              \item Stabilitas sistem yang lebih tinggi dengan meminimalkan risiko konfigurasi yang tidak diinginkan
-              \item Audit trail yang lengkap melalui riwayat Git, memudahkan pelacakan perubahan dan penelusuran masalah
-          \end{itemize}
+  \item \textbf{Keunggulan Pendekatan Pull-based} dalam GitOps terbukti memberikan manfaat signifikan, terutama dalam hal:
+        \begin{itemize}
+          \item Keamanan yang lebih baik karena tidak memerlukan akses langsung ke cluster
+                Kubernetes dari pipeline CI/CD
+          \item Stabilitas sistem yang lebih tinggi dengan meminimalkan risiko konfigurasi yang
+                tidak diinginkan
+          \item Audit trail yang lengkap melalui riwayat Git, memudahkan pelacakan perubahan
+                dan penelusuran masalah
+        \end{itemize}
 
-    \item \textbf{Integrasi dengan Cloudflare Tunnel} berhasil mengatasi tantangan aksesibilitas aplikasi dalam cluster Kubernetes dari internet publik, sekaligus meningkatkan keamanan dengan tidak memerlukan pembukaan port firewall secara langsung ke node cluster.
+  \item \textbf{Integrasi dengan Cloudflare Tunnel} berhasil mengatasi tantangan aksesibilitas aplikasi dalam cluster Kubernetes dari internet publik, sekaligus meningkatkan keamanan dengan tidak memerlukan pembukaan port firewall secara langsung ke node cluster.
 
-    \item \textbf{Implementasi pada Lingkungan Bare-metal} menggunakan Proxmox VE dan Talos OS membuktikan bahwa pendekatan GitOps dapat diterapkan secara efektif di luar lingkungan cloud, memberikan fleksibilitas dan kontrol penuh atas infrastruktur.
+  \item \textbf{Implementasi pada Lingkungan Bare-metal} menggunakan Proxmox VE dan Talos OS membuktikan bahwa pendekatan GitOps dapat diterapkan secara efektif di luar lingkungan cloud, memberikan fleksibilitas dan kontrol penuh atas infrastruktur.
 
-    \item \textbf{Hasil Pengujian} menunjukkan bahwa solusi yang diimplementasikan memenuhi semua persyaratan fungsional dan non-fungsional, dengan tingkat keandalan mencapai 99.9\% dalam pengujian beban menengah, serta kemampuan rollback yang efektif dalam waktu kurang dari 1 menit.
+  \item \textbf{Hasil Pengujian} menunjukkan bahwa solusi yang diimplementasikan memenuhi semua persyaratan fungsional dan non-fungsional, dengan tingkat keandalan mencapai 99.9\% dalam pengujian beban menengah.
 \end{enumerate}
 
 \section{Saran}
-Berdasarkan temuan selama penelitian, berikut beberapa saran untuk pengembangan lebih lanjut:
+Berdasarkan temuan selama penelitian, berikut beberapa saran untuk pengembangan
+lebih lanjut:
 
-\begin{enumerate}
-    \item \textbf{Implementasi Multi-cluster} untuk meningkatkan ketersediaan dan toleransi kegagalan dengan mendistribusikan beban kerja ke beberapa cluster Kubernetes.
+\begin{enumerate}[label=\alph*.]
+  \item \textbf{Implementasi Multi-cluster} untuk meningkatkan ketersediaan dan toleransi kegagalan dengan mendistribusikan beban kerja ke beberapa cluster Kubernetes.
 
-    \item \textbf{Integrasi dengan Sistem Monitoring} yang lebih komprehensif seperti Prometheus dan Grafana untuk pemantauan yang lebih detail terhadap performa aplikasi dan infrastruktur.
+  \item \textbf{Integrasi dengan Sistem Monitoring} yang lebih komprehensif seperti Prometheus dan Grafana untuk pemantauan yang lebih detail terhadap performa aplikasi dan infrastruktur.
 
-    \item \textbf{Pengembangan Pipeline CI/CD} yang lebih matang dengan penambahan tahapan pengujian keamanan (security scanning) dan analisis kode statis (static code analysis).
+  \item \textbf{Pengembangan Pipeline CI/CD} yang lebih matang dengan penambahan tahapan pengujian keamanan (security scanning) dan analisis kode statis (static code analysis).
 
-    \item \textbf{Implementasi GitOps untuk Manajemen Infrastruktur} dengan menggunakan tools seperti Terraform dan Crossplane untuk memperluas prinsip GitOps ke level infrastruktur.
+  \item \textbf{Implementasi GitOps untuk Manajemen Infrastruktur} dengan menggunakan tools seperti Terraform dan Crossplane untuk memperluas prinsip GitOps ke level infrastruktur.
 
-    \item \textbf{Penambahan Mekanisme Disaster Recovery} yang lebih komprehensif untuk memastikan ketersediaan sistem dalam menghadapi kegagalan skala besar.
+  \item \textbf{Penambahan Mekanisme Disaster Recovery} yang lebih komprehensif untuk memastikan ketersediaan sistem dalam menghadapi kegagalan skala besar.
 \end{enumerate}
 
-Dengan demikian, penelitian ini tidak hanya berhasil membuktikan efektivitas ArgoCD dalam mengimplementasikan prinsip-prinsip GitOps pada lingkungan Kubernetes, tetapi juga memberikan landasan yang kuat untuk pengembangan lebih lanjut dalam rangka membangun sistem deployment yang lebih andal, aman, dan mudah dikelola.
+Dengan demikian, penelitian ini tidak hanya berhasil membuktikan efektivitas
+ArgoCD dalam mengimplementasikan prinsip-prinsip GitOps pada lingkungan
+Kubernetes, tetapi juga memberikan landasan yang kuat untuk pengembangan lebih
+lanjut dalam rangka membangun sistem deployment yang lebih andal, aman, dan
+mudah dikelola.

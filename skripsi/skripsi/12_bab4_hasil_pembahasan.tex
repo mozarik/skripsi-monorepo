@@ -528,7 +528,7 @@ ArgoCD dapat diakses melalui domain \texttt{argo.zeinfahrozi.my.id} dengan
 enkripsi TLS end-to-end. Semua lalu lintas akan melewati jaringan Cloudflare
 sehingga meningkatkan keamanan dan performa akses.
 
-\subsubsection{Konfigurasi Git Repository}
+\subsubsection{Konfigurasi Git Repository}\label{subsec:konfigurasi_git_repository}
 Git repository digunakan sebagai sumber kebenaran (source of truth) untuk
 konfigurasi infrastruktur. Repository yang digunakan adalah
 \url{https://github.com/mozarik/zein-home-lab}.
@@ -1708,43 +1708,123 @@ berfungsi untuk menghasilkan bilangan prima. Pada implementasi sebelumnya pada
 \textbf{\ref{subsec:implementasi_prime_generator_service} Implementasi Prime
   Generator Service} service tersebut hanya mengembalikan 3 bilangan prima secara
 acak. Pengujian kali ini akan dilakukan dengan mengubah source code service
-tersebut menjadi mengembalikan 5 bilangan prima secara acak.
+tersebut menjadi mengembalikan 5 bilangan prima secara acak. Pada \textbf{Table
+  \ref{tab:pengujian-flow-deployment-frontend}} menampilkan runtutan tahap-tahap
+deployment sebuah service yang terdapat perubahan pada kode service.
 
-\subsection{Analisis Hasil Pengujian}\label{subsec:analisis_hasil}
-Berdasarkan hasil pengujian yang telah dilakukan, dapat dianalisis bahwa
-implementasi ArgoCD berhasil memenuhi kebutuhan dalam mendukung alur kerja
-GitOps pada infrastruktur Kubernetes. Berikut adalah analisis mendalam dari
-hasil pengujian:
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|c|p{6cm}|p{8cm}|}
+    \hline
+    \textbf{No} & \textbf{Langkah}                                                                                              & \textbf{Validasi Output}                                                                                     \\
+    \hline
+    1           & Buat perubahan pada kode service lalu membuat pull request                                                    & Validasi terdapat changes pada pull request                                                                  \\
+    \hline
+    2           & Melakukan merging pada pull request                                                                           & Validasi pull request dapat di merge tanpa konflik                                                           \\
+    \hline
+    3           & Dapatkan image service baru dari hasil Build Pipeline pada Github Action                                      & Validasi Pipeline berjalan dengan sukses                                                                     \\
+    \hline
+    4           & Ubah image tag pada definisi deployment sebuah service lalu merge perubahan tersebut pada branch utama (main) & Validasi perubahan image tag sudah masuk ke branch utama dan manifest terupdate di repository                \\
+    \hline
+    5           & Argo CD akan melakukan sync automatis terhadap perubahan yang terjadi pada git repository                     & Validasi terhadap manifest pada ArgoCD, status aplikasi berubah menjadi \texttt{Synced} dan \texttt{Healthy} \\
+    \hline
+  \end{tabular}
+  \caption{Pengujian Flow Deployment Service Frontend}
+  \label{tab:pengujian-flow-deployment-frontend}
+\end{table}
 
-\subsubsection{Ketahanan Sistem}
-Sistem berhasil melewati semua skenario pengujian yang mencakup berbagai aspek
-fungsionalitas ArgoCD. Hal ini menunjukkan bahwa arsitektur yang dirancang
-telah memenuhi kebutuhan dasar dalam implementasi GitOps.
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/pull-request-code-changes-prime-service-5-return.jpg}}
+  \caption{Pull Request Perubahan Kode Prime Generator Service}
+  \label{fig:pull-request-code-changes-prime-service-5-return}
+\end{figure}
 
-\subsubsection{Kesesuaian dengan Ekspektasi}
-Dari 15 test case yang dilakukan, seluruhnya menunjukkan hasil yang sesuai
-dengan ekspektasi. Ini menunjukkan bahwa ArgoCD dapat diandalkan untuk
-mengelola aplikasi pada cluster Kubernetes dengan pendekatan GitOps.
+Pada \textbf{Gambar \ref{fig:pull-request-code-changes-prime-service-5-return}}
+menampilkan perubahan pada kode Prime Generator Service. Sebelumnya service
+tersebut hanya mengembalikan 3 bilangan prima secara acak. Pada perubahan yang
+tampil pada gambar tersebut kode nya diubah agar mengembalikan 5 bilangan prima
+secara acak.
 
-\subsubsection{Keandalan Fitur Inti}
-Fitur-fitur inti seperti sinkronisasi otomatis, rollback, dan manajemen
-konfigurasi berfungsi dengan baik. Hal ini menjadi bukti bahwa ArgoCD dapat
-diandalkan untuk keperluan continuous deployment dalam lingkungan produksi.
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/hasil-generate-image-baru-prime-service-5-return.jpg}}
+  \caption{Hasil Generate Image Baru Prime Generator Service}
+  \label{fig:hasil-generate-image-baru-prime-service-5-return}
+\end{figure}
 
-\subsubsection{Keterbatasan}
-Meskipun semua test case berhasil, terdapat beberapa aspek yang memerlukan
-perhatian lebih lanjut, seperti manajemen kredensial yang aman dan pengaturan
-RBAC yang lebih ketat untuk keperluan produksi.
+Pada \textbf{Gambar \ref{fig:hasil-generate-image-baru-prime-service-5-return}}
+menampilkan hasil generate image baru Prime Generator Service. Hasil dari image
+tersebut dihasilkan oleh Build Pipeline yang sebelumnya sudah diimplementasikan
+pada \textbf{\ref{subsec:konfigurasi_git_repository} ' Konfigurasi Git
+  Repository}. Dimana versi image tersebut akan digunakan sebagai image tag pada
+definisi deployment service tersebut.
 
-\subsubsection{Rekomendasi}
-Berdasarkan hasil pengujian, berikut beberapa rekomendasi untuk pengembangan
-selanjutnya:
-\begin{enumerate}
-  \item Implementasi mekanisme backup dan recovery yang lebih komprehensif
-  \item Peningkatan pengujian keamanan dan penetrasi
-  \item Pengembangan pipeline CI/CD yang lebih matang
-  \item Implementasi monitoring dan alerting yang lebih baik
-\end{enumerate}
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/perubahan-image-version-pada-prime-service.png}}
+  \caption{Perubahan Versi Image Pada Pull Request Code}
+  \label{fig:perubahan-versi-image-pada-pull-request-code}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:perubahan-versi-image-pada-pull-request-code}}
+dilakukan perubahan versi image pada pull request code. Versi image tersebut
+merupakan dihasilkan oleh Build Pipeline (\textbf{Gambar
+  \ref{fig:hasil-generate-image-baru-prime-service-5-return}}). Pada
+\textbf{Gambar \ref{fig:perubahan-versi-image-pada-argo}} menampilkan perubahan
+versi image pada manifest yang tampil pada definisi deployment service tersebut
+pada ArgoCD.
+
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/perubahab-versi-image-pada-argo.png}}
+  \caption{Perubahan Versi Image Pada Manifest ArgoCD}
+  \label{fig:perubahan-versi-image-pada-argo}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/hasil-prime-generator-service-return-5.png}}
+  \caption{Hasil Prime Generator Service Return 5}
+  \label{fig:hasil-prime-generator-service-return-5}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:hasil-prime-generator-service-return-5}}
+menampilkan hasil Prime Generator Service yang sudah berhasil diupdate yang
+sebelumnya hanya mengembalikan 3 bilangan prima secara acak (\textbf{Gambar
+  \ref{fig:htmx-frontend-prime-generator-service}}) dan sekarang mengembalikan 5
+bilangan prima secara acak. Terdapat error response pada front end yang
+diekspektasi muncul dikarenakan tidak ada 5 prime number yang dapat dihasilkan
+dari 1 digit.
+
+\newpage
+
+\subsection{Hasil Pengujian}\label{subsec:hasil_pengujian}
+Terhadap pengujian yang telah dilakukan pada
+\textbf{\ref{subsec:bab4_pengujian_microservice} Pengujian pada Microservice}
+terjawab bahwa semua service yang telah diimplementasi pada
+\textbf{\ref{sec:bab4_implementasi_microservice} Implementasi Microservice}
+telah berhasil diuji dan dapat berfungsi dengan baik secara fungsional dari
+sisi kode dan juga dari sisi fungsional secara keseluruhan dengan tingkat
+validasi 100\%. Hasil pengujian tersebut dijalankan pada infrastruktur yang
+dibuat pada bare-metal server menggunakan Proxmox. Infrastruktur yang dibangun
+terbukti dapat menangani load yang dihasilkan oleh service-service ketika
+dijalankan pada Kubernetes.
+
+Hasil uji penerapan flow automatic deployment pada ArgoCD juga menunjukan bahwa
+flow tersebut dapat berfungsi dengan baik dan dapat menangani perubahan yang
+terjadi pada source code service yang telah diimplementasi sebelumnya. Dalam
+flow automatic deployment tersebut juga sudah diterapkan continuous deployment
+pada Github Actions yang membantu dalam membuat image dari sebuah service dan
+menghasilkan image baru ketika terdapat perubahan pada kode service.
+
+Hasil dari pengujian dari perubahan kode source dapat langsung terintegrasi
+pada ArgoCD. Dimana perubahan akan langsung terdeploy secara automatis dan
+hasilnya dapat langsung digunakan oleh front end service, menunjukan bahwa flow
+tersebut dapat berfungsi dengan baik dan dapat menangani perubahan yang terjadi
+pada kode service yang telah diubah sebelumnya. Perubahan akan langsung tampak
+pada manifest ketika dilakukan perubahan pada versi image terbaru yang
+dihasilkan oleh Build Pipeline.
 
 % * Revisi Rumusan hasil rumusan di bab 4
 % * Revisi terkait penulisan implementasi yang ada di github masukan di skripsi
