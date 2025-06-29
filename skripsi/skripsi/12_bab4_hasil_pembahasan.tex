@@ -547,6 +547,181 @@ cluster melalui ArgoCD sebagai operator yang menjadi observer dan melakukan
 sinkronisasi antara status yang diinginkan (yang didefinisikan di Git) dengan
 status aktual di cluster.
 
+Pada \textbf{Gambar \ref{fig:flow_pull_based_deployments}} terdapat bagian
+Build Pipeline yang akan diimplementasikan menggunakan Github Action sebagai
+pipeline build yang akan melakukan build image dan push image ke repository
+github container registry.
+\begin{lstlisting}[language=yaml, 
+  basicstyle=\footnotesize\ttfamily,
+  caption={Salah Satu Contoh Implementasi Build Pipeline pada Prime Service},
+  label={lst:build-pipeline}]
+name: Build & Push Prime Service Image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'microservice_example/prime_service/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'microservice_example/prime_service/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up image tag
+        id: vars
+        run: |
+          echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/prime_service:${{ env.SHORT_SHA }} microservice_example/prime_service
+
+      - name: Push Docker image (commit tag)
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/prime_service:${{ env.SHORT_SHA }}
+
+      - name: Make image public
+        run: |
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/users/${{ github.repository_owner }}/packages/container/prime_service/visibility \
+            -d '{"visibility":"public"}'
+\end{lstlisting}
+
+Pada \textbf{Kode Program \ref{lst:build-pipeline}} menampilkan salah satu
+implementasi build pipeline pada service prime generator. Pada build pipeline
+ini terdapat sejumlah step dimana setiap step akan melakukan perintah sesuai
+\textit{run} yang didefinisikan. Image yang akan dibuild akan didapatkan dari
+path yang didefinisikan pada bagian \textit{run Build Docker image}. Setelah
+image dibuild, image tersebut akan diteruskan ke step selanjutnya yaitu
+\textit{Push Docker image (commit tag)}.
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/output-github-action-running.jpg}}
+  \caption{Output Github Action Running}
+  \label{fig:output_github_action_running}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:output_github_action_running}} menampilkan output
+Github Action Running yang akan dijalankan pada build pipeline. Image yang
+dibuild pada pipeline tersebut akan tersedia pada repository github container
+registry yang akan digunakan sebagai image pada automatic deployment pada
+ArgoCD.
+\begin{lstlisting}[language=yaml, 
+  basicstyle=\footnotesize\ttfamily,
+  caption={Contoh Manifest Deployment, Service, Ingress pada Git Repository},
+  label={lst:manifest-deployment}]
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: htmx-frontend
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: htmx-frontend
+  template:
+    metadata:
+      labels:
+        app: htmx-frontend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: app
+        image: ghcr.io/mozarik/htmx_frontend:c84a79b
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 10m
+          limits:
+            memory: 64Mi
+
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: htmx-frontend
+spec:
+  selector:
+    app: htmx-frontend
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+
+---
+# ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: htmx-frontend
+  annotations:
+    external-dns.alpha.kubernetes.io/target: external.zeinfahrozi.my.id
+spec:
+  ingressClassName: external
+  rules:
+  - host: "htmx-frontend.zeinfahrozi.my.id"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: htmx-frontend
+            port:
+              name: http
+\end{lstlisting}
+
+Pada git repository juga akan terdapat konfigurasi manifest deployment yang
+akan mendefinisikan sebuah service yang akan di-deploy pada kubernetes cluster.
+Pada \textbf{Kode Program \ref{lst:manifest-deployment}} menampilkan contoh
+manifest deployment, service, dan ingress sebuah service frontend yang akan
+di-deploy pada kubernetes cluster. Bagian \textit{kind: Deployment}
+mendefinisikan \textit{desired state} dari sebuah aplikasi seperti jumlah pod
+yang harus berjalan, image yang akan digunakan, dan resource yang akan
+digunakan. Bagian \textit{kind: Service} mendefinisikan menyediakan port yang
+akan diakses oleh user dan akan mengarahkan ke port yang diinginkan service
+berguna agar user dapat mengakses pod sebuah aplikasi. Bagian \textit{kind:
+  Ingress} mendefinisikan menyediakan port yang akan diakses oleh user dan akan
+mengarahkan ke port yang diinginkan service berguna agar user dapat mengakses
+pod sebuah aplikasi dengan domain yang diinginkan.
+
 \section{Implementasi Microservice}\label{sec:bab4_implementasi_microservice}
 Implementasi microservice pada penelitian ini terdiri dari beberapa service
 yang ditulis menggunakan bahasa pemrograman Go/Golang. Service yang dibuat akan
@@ -769,7 +944,7 @@ func main() {
 }
 \end{lstlisting}
 
-\subsection{Implementasi Prime Generator Service}
+\subsection{Implementasi Prime Generator Service}\label{subsec:implementasi_prime_generator_service}
 Prime generator service sendiri mempunyai fungsionalitas untuk mendapatkan
 bilangan prima berdasarkan input dari user. User akan melalukan input berupa
 jumlah digit bilangan prima yang diinginkan dan akan mendapatkan response
@@ -1403,7 +1578,7 @@ dilakukan beserta hasilnya:
   \label{tab:test-case-2}
 \end{table}
 
-\subsubsection{Pegujian Flow Automatic Deployment pada ArgoCD}
+\subsubsection{Pengujian Flow Automatic Deployment pada ArgoCD}
 Pada pengujian ini akan dilakukan pengujian flow automatic deployment pada
 service yang telah diimplementasikan pada
 \textbf{\ref{sec:bab4_implementasi_microservice} Implementasi Microservice}.
@@ -1412,6 +1587,128 @@ Pengujian tahap ini akan mengikuti flow seperti pada gambar \textbf{Gambar
 tahap ini yaitu flow pull based deployment. Validasi dari pengujian yang
 dilakukan adalah berdasarkan perubahan yang terjadi pada kode service dan juga
 manifest yang terdeploy pada ArgoCD.
+
+Dalam bagian pengujian ini peneliti akan perlahan melakukan deployment pada
+service yang telah diimplementasikan pada
+\textbf{\ref{sec:bab4_implementasi_microservice} Implementasi Microservice}
+secara satu persatu. Service akan divalidasi dengan perubahan yang terjadi pada
+kode service dan juga manifest yang terdeploy pada ArgoCD. Setelah melakukan
+deployment pada service yang telah diimplementasikan sebelumnya, peneliti akan
+melakukan validasi dengan flow deployment jika ingin melakukan update pada
+source kode service. Prerequisite yang diperlukan dalam pengujian ini adalah
+\begin{enumerate}
+  \item Terdapat image yang sudah siap untuk di fetch ini bisa menggunakan image yang
+        dihasilkan pada \textbf{Gambar \ref{fig:output_github_action_running}}
+  \item Terdapat definisi deployment, service, ingress yang didefinisikan pada git
+        repository seperti yang dicontohkan pada \textbf{Kode Program
+          \ref{lst:manifest-deployment}}
+\end{enumerate}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabular}{|c|p{6cm}|p{8cm}|}
+    \hline
+    \textbf{No} & \textbf{Langkah}                                                                       & \textbf{Validasi Output}                                                                                       \\
+    \hline
+    1           & Membuka Argo CD melalui UI (\texttt{argo.zeinfahrozi.my.id})                           & Halaman login Argo CD muncul di browser                                                                        \\
+    \hline
+    2           & Masukan username dan password                                                          & Dashboard utama Argo CD tampil                                                                                 \\
+    \hline
+    3           & Klik "+New App"                                                                        & Form aplikasi baru muncul                                                                                      \\
+    \hline
+    4           & Masukan manifest YAML konfigurasi git repository                                       & Field dapat diisi tanpa error                                                                                  \\
+    \hline
+    5           & Klik "Create"                                                                          & Aplikasi baru muncul di dashboard Argo CD                                                                      \\
+    \hline
+    6           & Klik nama service pada dashboard                                                       & Tampilan detail aplikasi/service muncul                                                                        \\
+    \hline
+    7           & Pastikan manifest cocok dengan repository (klik "Deploy" pada graph dashboard service) & Resource yang terdeploy sesuai YAML di repository, status berubah menjadi \texttt{Synced} dan \texttt{Healthy} \\
+    \hline
+    8           & Buka URL service frontend di browser                                                   & Halaman frontend dapat diakses dan berfungsi dengan normal                                                     \\
+    \hline
+  \end{tabular}
+  \caption{Pengujian Flow Deployment Service Frontend}
+  \label{tab:pengujian-flow-deployment-frontend}
+\end{table}
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.73\textwidth]{figures/flow-deployment-gambar-argo-manual.png}}
+  \caption{Tahap-Tahap Deployment sebuah service baru pada ArgoCD}
+  \label{fig:flow-deployment-gambar-argo-manual}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/htmx-frontend-welcome-muhammad-zein.jpg}}
+  \caption{Tampilan Halaman Frontend Setelah Deployment}
+  \label{fig:htmx-frontend-welcome-muhammad-zein}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:htmx-frontend-welcome-muhammad-zein}} menampilkan
+hasil deployment service frontend yang berhasil. Dimana halaman front end dapat
+berfungsi dengan normal pada url \texttt{htmx.zeinfahrozi.my.id}. Untuk dapat
+mengakses service lain nya dapat diakses dengan cara login. Dimana untuk
+validasi Login tersebut akan dilakukan oleh Auth Service.
+
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/auth-service-deploy-manual-flow.jpg}}
+  \caption{Hasil Implementasi Auth Service yang digunakan pada Frontend}
+  \label{fig:htmx-frontend-auth-service}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:htmx-frontend-auth-service}} menampilkan hasil
+implementasi auth service yang berhasil. Dimana auth service akan berfungsi
+sebagai autentikasi dan otorisasi user sebelum bisa mengakses service backend
+yaitu Color Service dan Prime Generator Service.
+
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/color-service-result.png}}
+  \caption{Hasil Implementasi Color Service yang digunakan pada Frontend}
+  \label{fig:htmx-frontend-color-service}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:htmx-frontend-color-service}} menampilkan hasil
+implementasi color service yang berhasil. Dimana color service akan berfungsi
+sebagai service yang akan menghasilkan warna acak yang akan digunakan pada
+frontend. Hasil balik dari service tersebut akan digunakan oleh frontend
+service untuk menampilkan warna acak pada hasil text yang akan ditampilkan pada
+halaman frontend.
+
+\begin{figure}[H]
+  \centering
+  \fcolorbox{black}{white}{\includegraphics[width=0.9\textwidth]{figures/hasil-prime-generator-service-return-3.png}}
+  \caption{Hasil Implementasi Prime Generator Service yang digunakan pada Frontend}
+  \label{fig:htmx-frontend-prime-generator-service}
+\end{figure}
+
+Pada \textbf{Gambar \ref{fig:htmx-frontend-prime-generator-service}}
+menampilkan hasil implementasi prime generator service yang berhasil. Dimana
+prime generator service akan berfungsi sebagai service yang akan menghasilkan
+bilangan prima yang akan digunakan pada frontend. Hasil balik dari service
+tersebut akan digunakan oleh frontend service untuk menampilkan bilangan prima
+yang akan ditampilkan pada halaman frontend.
+
+Tahap-Tahap deployment sebuah service baru pada ArgoCD dirunutkan pada
+\textbf{Table \ref{tab:pengujian-flow-deployment-frontend}} runtutan tersebut
+dapat dilihat pada \textbf{Gambar
+  \ref{fig:flow-deployment-gambar-argo-manual}}. Pada \textbf{Gambar
+  \ref{fig:htmx-frontend-welcome-muhammad-zein}} menampilkan tampilan halaman
+frontend setelah deployment berhasil. Tahap tahap tersebut akan dilakukan pada
+beberapa service yang sudah diimplementasi pada
+\textbf{\ref{sec:bab4_implementasi_microservice} Implementasi Microservice}
+service-service yang akan dideploy akan menjadi kumpulan dari service-service
+yang disebut dengan microservices.
+
+Selanjutnya peneliti akan melakukan uji flow automatic deployment pada ArgoCD
+ketika terdapat perubahan pada source code service yang telah diimplementasi
+sebelumnya. Disini akan diambil contoh Service Prime Generator service yang
+berfungsi untuk menghasilkan bilangan prima. Pada implementasi sebelumnya pada
+\textbf{\ref{subsec:implementasi_prime_generator_service} Implementasi Prime
+  Generator Service} service tersebut hanya mengembalikan 3 bilangan prima secara
+acak. Pengujian kali ini akan dilakukan dengan mengubah source code service
+tersebut menjadi mengembalikan 5 bilangan prima secara acak.
 
 \subsection{Analisis Hasil Pengujian}\label{subsec:analisis_hasil}
 Berdasarkan hasil pengujian yang telah dilakukan, dapat dianalisis bahwa
